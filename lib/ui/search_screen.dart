@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
+import 'package:tmsh_flutter/ui/widget/search_field.dart';
 
 class SearchScreen extends StatefulWidget {
   final String title;
@@ -10,15 +12,26 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+          // Search bar - TextField for search query
+          title: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: SearchField(),
+            ),
+          ),
+          actions: <Widget>[
+            // Icon that gives direct access to the favorites
+            // displays "real-time" number of favorites
+            FavoriteButton(child: const Icon(Icons.star)),
+          ]),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
