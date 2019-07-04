@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
 class SearchField extends StatefulWidget {
+  // pass events from inner TextField
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String> onSubmitted;
+
   const SearchField({
     Key key,
+    this.onChanged,
+    this.onSubmitted,
   }) : super(key: key);
 
   @override
@@ -34,10 +40,8 @@ class _SearchFieldState extends State<SearchField> {
           color: Colors.black.withOpacity(0.5),
         ),
       ),
-      onSubmitted: (searchQuery) {
-        // TODO: search field/search query
-        print("Search request: " + searchQuery);
-      },
+      onChanged: widget.onChanged,
+      onSubmitted: widget.onSubmitted,
       controller: _controller,
       focusNode: _focusNode,
     );

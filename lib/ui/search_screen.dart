@@ -1,4 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
+import 'package:tmsh_flutter/data/models/tmdb_search_movies.dart';
+import 'package:tmsh_flutter/data/tmdb_api_source.dart';
 import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
 
@@ -12,6 +18,34 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  TMDbApiSource tmdbClient;
+  final List<TMDbMovieCard> _movieItems = <TMDbMovieCard>[];
+  Future<TMDbSearchMovies> newMovies;
+  // List<TMDbMovieCard> _movieItems = {};
+
+  _SearchScreenState() {
+    tmdbClient = TMDbApiSource(new http.Client());
+  }
+
+  void _textChanged(String queryText) async {
+    print("_textChanged: " + queryText);
+    this._clearItems();
+
+    await Future.delayed(const Duration(milliseconds: 500));
+    newMovies = tmdbClient.searchMovie(query: queryText);
+    // .then((TMDbSearchMovies movies) {
+    //   _movieItems.addAll(movies.movies);
+    //   print(_movieItems.toString());
+    // });
+    // TODO network call
+  }
+
+  void _clearItems() {
+    setState(() {
+      _movieItems.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +58,9 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             child: Padding(
               padding: const EdgeInsets.only(left: 5),
-              child: SearchField(),
+              child: SearchField(
+                onChanged: (text) => this._textChanged(text),
+              ),
             ),
           ),
           actions: <Widget>[
@@ -32,37 +68,37 @@ class _SearchScreenState extends State<SearchScreen> {
             // displays "real-time" number of favorites
             FavoriteButton(child: const Icon(Icons.star)),
           ]),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'SearchScreen hash code:',
-            ),
-            Text(
-              '${widget.hashCode}',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
+      body: FutureBuilder(
+        future: newMovies,
+        builder: (context, AsyncSnapshot<TMDbSearchMovies> snapshot) {
+          if (snapshot.hasData) {
+            return buildList(snapshot);
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        },
       ),
     );
+  }
+
+  Widget buildList(AsyncSnapshot<TMDbSearchMovies> snapshot) {
+    return GridView.builder(
+        itemCount: snapshot.data.movies.length,
+        gridDelegate:
+            new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemBuilder: (BuildContext context, int index) {
+          return GridTile(
+            child: InkResponse(
+              enableFeedback: true,
+              child: Image.network(
+                'https://image.tmdb.org/t/p/w185${snapshot.data.movies[index].posterPath}',
+                fit: BoxFit.cover,
+              ),
+              //onTap: () => openDetailPage(snapshot.data, index),
+            ),
+          );
+        });
   }
 
   @override
