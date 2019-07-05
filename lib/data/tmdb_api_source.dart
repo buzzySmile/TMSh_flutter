@@ -13,7 +13,6 @@ const int MAX_SEARCH_RESULTS = 5;
 
 class TMDbApiSource {
   static const String baseUrl = 'api.themoviedb.org';
-  final String imageBaseUrl = 'http://image.tmdb.org/t/p/w185/';
   final http.Client client;
 
   TMDbApiSource(this.client);

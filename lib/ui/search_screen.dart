@@ -1,12 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
-import 'package:tmsh_flutter/data/models/tmdb_search_movies.dart';
-import 'package:tmsh_flutter/data/tmdb_api_source.dart';
 import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
+import 'package:tmsh_flutter/bloc/search_bloc.dart';
 
 class SearchScreen extends StatefulWidget {
   final String title;
@@ -18,33 +13,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  TMDbApiSource tmdbClient;
-  final List<TMDbMovieCard> _movieItems = <TMDbMovieCard>[];
-  Future<TMDbSearchMovies> newMovies;
-  // List<TMDbMovieCard> _movieItems = {};
-
-  _SearchScreenState() {
-    tmdbClient = TMDbApiSource(new http.Client());
-  }
-
-  void _textChanged(String queryText) async {
-    print("_textChanged: " + queryText);
-    this._clearItems();
-
-    await Future.delayed(const Duration(milliseconds: 500));
-    newMovies = tmdbClient.searchMovie(query: queryText);
-    // .then((TMDbSearchMovies movies) {
-    //   _movieItems.addAll(movies.movies);
-    //   print(_movieItems.toString());
-    // });
-    // TODO network call
-  }
-
-  void _clearItems() {
-    setState(() {
-      _movieItems.clear();
-    });
-  }
+  SearchBloc _searchBloc = SearchBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +28,7 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 5),
               child: SearchField(
-                onChanged: (text) => this._textChanged(text),
+                onChanged: (text) => _searchBloc.inSearchQuery.add(text),
               ),
             ),
           ),
@@ -68,23 +37,40 @@ class _SearchScreenState extends State<SearchScreen> {
             // displays "real-time" number of favorites
             FavoriteButton(child: const Icon(Icons.star)),
           ]),
-      body: FutureBuilder(
-        future: newMovies,
-        builder: (context, AsyncSnapshot<TMDbSearchMovies> snapshot) {
+      body: StreamBuilder(
+        stream: _searchBloc.outMoviesResult,
+        initialData: SearchStateInit(),
+        builder: (context, AsyncSnapshot<SearchState> snapshot) {
           if (snapshot.hasData) {
-            return buildList(snapshot);
+            if (snapshot.data is SearchStateInit)
+              return _buildInit();
+            else if (snapshot.data is SearchStateLoading)
+              return _buildLoading();
+            else
+              return buildList(snapshot.data);
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
-          return Center(child: CircularProgressIndicator());
         },
       ),
     );
   }
 
-  Widget buildList(AsyncSnapshot<TMDbSearchMovies> snapshot) {
+  Widget _buildInit() {
+    return Center(
+      child: const Text('Make a TMDb movie search'),
+    );
+  }
+
+  Widget _buildLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget buildList(SearchStateReady moviesReady) {
     return GridView.builder(
-        itemCount: snapshot.data.movies.length,
+        itemCount: moviesReady.movies.length,
         gridDelegate:
             new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
@@ -92,10 +78,9 @@ class _SearchScreenState extends State<SearchScreen> {
             child: InkResponse(
               enableFeedback: true,
               child: Image.network(
-                'https://image.tmdb.org/t/p/w185${snapshot.data.movies[index].posterPath}',
+                moviesReady.movies[index].posterPath,
                 fit: BoxFit.cover,
               ),
-              //onTap: () => openDetailPage(snapshot.data, index),
             ),
           );
         });
@@ -103,7 +88,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    _searchBloc.dispose();
     super.dispose();
   }
 }
