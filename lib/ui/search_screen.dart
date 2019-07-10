@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
 import 'package:tmsh_flutter/bloc/search_bloc.dart';
+import 'package:kiwi/kiwi.dart' as kiwi;
 
 class SearchScreen extends StatefulWidget {
   final String title;
@@ -13,7 +14,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final SearchBloc _searchBloc = SearchBloc();
+  final SearchBloc _searchBloc = kiwi.Container().resolve<SearchBloc>();
   final ScrollController _scrollController = ScrollController();
 
   @override

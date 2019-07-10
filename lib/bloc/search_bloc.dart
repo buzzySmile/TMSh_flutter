@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 import 'package:tmsh_flutter/data/tmdb_api_source.dart';
 
@@ -40,7 +39,7 @@ class SearchStateReady extends SearchState {
 // ==========================================
 
 class SearchBloc {
-  TMDbApiSource tmdbClient = new TMDbApiSource(new http.Client());
+  final TMDbApiSource _tmdbClient;
 
   final List<TMDbMovieCard> _movieList = <TMDbMovieCard>[];
   int _pageIndex = 1;
@@ -56,7 +55,7 @@ class SearchBloc {
   Sink<SearchState> get _inSearchState => _searchStateController.sink;
   Stream<SearchState> get outSearchState => _searchStateController.stream;
 
-  SearchBloc() {
+  SearchBloc(this._tmdbClient) {
     // Whenever there is a new Search Event, we want to handle it
     _searchEventController.stream.listen(_handleSearchEvent);
   }
@@ -82,7 +81,7 @@ class SearchBloc {
     }
 
     // start search query and handle search result
-    tmdbClient
+    _tmdbClient
         .searchMovie(query: _queryText, pageIndex: _pageIndex)
         .then((searchResult) {
       _movieList.addAll(searchResult.movies);
