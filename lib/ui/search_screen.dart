@@ -13,7 +13,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  SearchBloc _searchBloc = SearchBloc();
+  final SearchBloc _searchBloc = SearchBloc();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,8 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 5),
               child: SearchField(
-                onChanged: (text) => _searchBloc.inSearchQuery.add(text),
+                onChanged: (text) =>
+                    _searchBloc.inSearchEvent.add(SearchEvent.query(text)),
               ),
             ),
           ),
@@ -38,7 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
             FavoriteButton(child: const Icon(Icons.star)),
           ]),
       body: StreamBuilder(
-        stream: _searchBloc.outMoviesResult,
+        stream: _searchBloc.outSearchState,
         initialData: SearchStateInit(),
         builder: (context, AsyncSnapshot<SearchState> snapshot) {
           if (snapshot.hasData) {
@@ -69,21 +71,33 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget buildList(SearchStateReady moviesReady) {
-    return GridView.builder(
-        itemCount: moviesReady.movies.length,
-        gridDelegate:
-            new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemBuilder: (BuildContext context, int index) {
-          return GridTile(
-            child: InkResponse(
-              enableFeedback: true,
-              child: Image.network(
-                moviesReady.movies[index].posterPath,
-                fit: BoxFit.cover,
+    return NotificationListener(
+      onNotification: _handleScrollNotification,
+      child: GridView.builder(
+          controller: _scrollController,
+          itemCount: moviesReady.movies.length,
+          gridDelegate:
+              new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+          itemBuilder: (BuildContext context, int index) {
+            return GridTile(
+              child: InkResponse(
+                enableFeedback: true,
+                child: Image.network(
+                  moviesReady.movies[index].posterPath,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-          );
-        });
+            );
+          }),
+    );
+  }
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollEndNotification &&
+        _scrollController.position.extentAfter == 0)
+      _searchBloc.inSearchEvent.add(SearchEvent.next());
+
+    return false;
   }
 
   @override

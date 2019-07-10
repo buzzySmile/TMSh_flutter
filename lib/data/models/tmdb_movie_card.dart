@@ -15,7 +15,9 @@ class TMDbMovieCard extends Object {
         title = json['title'],
         overview = json['overview'],
         voteAverage = json['vote_average'],
-        posterPath = imageBaseUrl + (json['poster_path'] ?? '');
+        posterPath = json['poster_path'] == null
+            ? ''
+            : imageBaseUrl + json['poster_path'];
 
   @override
   bool operator ==(dynamic other) =>
