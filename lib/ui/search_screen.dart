@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
+import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
 import 'package:tmsh_flutter/bloc/search_bloc.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
@@ -52,7 +53,9 @@ class _SearchScreenState extends State<SearchScreen> {
             else
               return buildList(snapshot.data);
           } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
           }
         },
       ),
@@ -74,19 +77,13 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget buildList(SearchStateReady moviesReady) {
     return NotificationListener(
       onNotification: _handleScrollNotification,
-      child: GridView.builder(
+      child: ListView.builder(
           controller: _scrollController,
           itemCount: moviesReady.movies.length,
-          gridDelegate:
-              new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
           itemBuilder: (BuildContext context, int index) {
-            return GridTile(
-              child: InkResponse(
-                enableFeedback: true,
-                child: Image.network(
-                  moviesReady.movies[index].posterPath,
-                  fit: BoxFit.cover,
-                ),
+            return Card(
+              child: MovieCard(
+                movieData: moviesReady.movies[index],
               ),
             );
           }),

@@ -21,7 +21,7 @@ class FavoriteButton extends StatelessWidget {
         child: Stack(
           overflow: Overflow.visible,
           children: [
-            child,
+            this.child,
             Positioned(
               top: -12.0,
               right: -6.0,
