@@ -55,10 +55,14 @@ class MovieCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const Icon(
-                        Icons.star,
-                        color: Colors.black38,
-                      ),
+                      InkWell(
+                        child: const Icon(
+                          Icons.star,
+                          color: Colors.black38,
+                        ),
+                        onTap: () =>
+                            print('Add (id)${movieData.id} to Shortlist'),
+                      )
                     ],
                   )
                 ],

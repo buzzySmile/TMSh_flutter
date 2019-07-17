@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tmsh_flutter/injection.dart';
-import 'package:tmsh_flutter/ui/search_screen.dart';
+import 'package:tmsh_flutter/route_generator.dart';
 
 void main() {
   injectDependencies();
@@ -15,7 +15,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: SearchScreen(title: 'TMSh Demo'),
+      initialRoute: '/',
+      onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings),
     );
   }
 }

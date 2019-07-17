@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 class FavoriteButton extends StatelessWidget {
+  final Widget child;
+  final VoidCallback onPressed;
+
   FavoriteButton({
     Key key,
     @required this.child,
+    this.onPressed,
   }) : super(key: key);
-
-  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return ButtonTheme(
       minWidth: 0.0,
       child: FlatButton(
-        onPressed: () {
-          print("Navigate to Shortlist page");
-        },
+        onPressed: this.onPressed,
         // elevation: 0,
         color: Theme.of(context).accentColor,
         child: Stack(

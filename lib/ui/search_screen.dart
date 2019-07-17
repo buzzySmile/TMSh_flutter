@@ -6,9 +6,7 @@ import 'package:tmsh_flutter/bloc/search_bloc.dart';
 import 'package:kiwi/kiwi.dart' as kiwi;
 
 class SearchScreen extends StatefulWidget {
-  final String title;
-
-  SearchScreen({Key key, this.title}) : super(key: key);
+  SearchScreen({Key key}) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -39,7 +37,13 @@ class _SearchScreenState extends State<SearchScreen> {
           actions: <Widget>[
             // Icon that gives direct access to the favorites
             // displays "real-time" number of favorites
-            FavoriteButton(child: const Icon(Icons.star)),
+            FavoriteButton(
+              child: const Icon(Icons.star),
+              onPressed: () => Navigator.pushNamed(
+                context,
+                '/shortlist',
+              ),
+            )
           ]),
       body: StreamBuilder(
         stream: _searchBloc.outSearchState,
@@ -82,8 +86,12 @@ class _SearchScreenState extends State<SearchScreen> {
           itemCount: moviesReady.movies.length,
           itemBuilder: (BuildContext context, int index) {
             return Card(
-              child: MovieCard(
-                movieData: moviesReady.movies[index],
+              child: GestureDetector(
+                child: MovieCard(
+                  movieData: moviesReady.movies[index],
+                ),
+                onTap: () => Navigator.pushNamed(context, '/movie',
+                    arguments: moviesReady.movies[index]),
               ),
             );
           }),
