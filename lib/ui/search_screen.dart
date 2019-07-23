@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tmsh_flutter/bloc/bloc_provider.dart';
+import 'package:tmsh_flutter/bloc/shortlist_bloc.dart';
 import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
 import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
@@ -15,9 +17,12 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final SearchBloc _searchBloc = kiwi.Container().resolve<SearchBloc>();
   final ScrollController _scrollController = ScrollController();
+  ShortlistBloc _shortlistBloc;
 
   @override
   Widget build(BuildContext context) {
+    _shortlistBloc = BlocProvider.of<ShortlistBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
           // Search bar - TextField for search query
@@ -35,15 +40,22 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           actions: <Widget>[
-            // Icon that gives direct access to the favorites
-            // displays "real-time" number of favorites
-            FavoriteButton(
-              child: const Icon(Icons.star),
-              onPressed: () => Navigator.pushNamed(
-                context,
-                '/shortlist',
-              ),
-            )
+            StreamBuilder(
+              stream: _shortlistBloc.outShortlistState,
+              initialData: ShortlistState(_shortlistBloc.shortlist),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                return FavoriteButton(
+                  child: const Icon(Icons.star),
+                  count: (snapshot.data is ShortlistState)
+                      ? snapshot.data.shortlistLength
+                      : 0,
+                  onPressed: () => Navigator.pushNamed(
+                    context,
+                    '/shortlist',
+                  ),
+                );
+              },
+            ),
           ]),
       body: StreamBuilder(
         stream: _searchBloc.outSearchState,
@@ -89,6 +101,8 @@ class _SearchScreenState extends State<SearchScreen> {
               child: GestureDetector(
                 child: MovieCard(
                   movieData: moviesReady.movies[index],
+                  onShortlist: (movie) =>
+                      _shortlistBloc.inShortlist.add(ShortlistEvent(movie)),
                 ),
                 onTap: () => Navigator.pushNamed(context, '/movie',
                     arguments: moviesReady.movies[index]),

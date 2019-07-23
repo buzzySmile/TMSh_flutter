@@ -16,6 +16,16 @@ class ShortlistEvent {
   }
 }
 
+class ShortlistState {
+  final List<TMDbMovieCard> _movieList;
+
+  ShortlistState(this._movieList);
+
+  List<TMDbMovieCard> get shortlist => _movieList;
+
+  int get shortlistLength => _movieList.length;
+}
+
 class ShortlistAdd extends ShortlistEvent {
   ShortlistAdd(TMDbMovieCard movie) : super(movie);
 }
@@ -27,16 +37,35 @@ class ShortlistRemove extends ShortlistEvent {
 class ShortlistBloc extends BlocBase {
   final Set<TMDbMovieCard> _shortlist;
 
-  ShortlistBloc() : _shortlist = Set<TMDbMovieCard>();
+  List<TMDbMovieCard> get shortlist => _shortlist.toList();
+
+  ShortlistBloc() : _shortlist = Set<TMDbMovieCard>() {
+    _shortlistEventController.stream.listen(_handleShortlist);
+  }
 
   final _shortlistEventController = StreamController<ShortlistEvent>();
 
   Sink<ShortlistEvent> get inShortlist => _shortlistEventController.sink;
   Stream<ShortlistEvent> get outShortlist => _shortlistEventController.stream;
 
+  final _shortlistStateController = StreamController<ShortlistState>();
+
+  Sink<ShortlistState> get _inShortlistState => _shortlistStateController.sink;
+  Stream<ShortlistState> get outShortlistState =>
+      _shortlistStateController.stream;
+
+  _handleShortlist(ShortlistEvent event) {
+    if (!_shortlist.contains(event.movie))
+      _shortlist.add(event.movie);
+    else
+      _shortlist.remove(event.movie);
+
+    _inShortlistState.add(ShortlistState(_shortlist.toList()));
+  }
+
   @override
   void dispose() {
     _shortlistEventController.close();
-    // TODO: implement dispose
+    _shortlistStateController.close();
   }
 }

@@ -3,11 +3,9 @@ import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
 class MovieCard extends StatelessWidget {
   final TMDbMovieCard movieData;
+  final ValueChanged<TMDbMovieCard> onShortlist;
 
-  MovieCard({
-    Key key,
-    this.movieData,
-  }) : super(key: key);
+  MovieCard({Key key, this.movieData, this.onShortlist}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +58,7 @@ class MovieCard extends StatelessWidget {
                           Icons.star,
                           color: Colors.black38,
                         ),
-                        onTap: () =>
-                            print('Add (id)${movieData.id} to Shortlist'),
+                        onTap: () => this.onShortlist(movieData),
                       )
                     ],
                   )
