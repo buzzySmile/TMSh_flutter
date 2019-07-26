@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:tmsh_flutter/actions/actions.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
+import 'package:tmsh_flutter/shortlist_state.dart';
 
 class MovieCard extends StatelessWidget {
   final TMDbMovieCard movieData;
@@ -11,6 +14,8 @@ class MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final store = StoreProvider.of<ShortlistState>(context);
+
     return SizedBox(
       height: 130,
       child: Row(
@@ -60,8 +65,8 @@ class MovieCard extends StatelessWidget {
                           Icons.star,
                           color: Colors.black38,
                         ),
-                        onTap: () =>
-                            print('Add (id)${movieData.id} to Shortlist'),
+                        onTap: () => store.dispatch(AddMovieAction(movieData)),
+                        //print('Add (id)${movieData.id} to Shortlist'),
                       )
                     ],
                   )

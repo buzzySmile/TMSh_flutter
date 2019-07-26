@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
+import 'package:tmsh_flutter/ui/component/shortlist_button.dart';
 import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
 import 'package:tmsh_flutter/bloc/search_bloc.dart';
@@ -37,13 +37,7 @@ class _SearchScreenState extends State<SearchScreen> {
           actions: <Widget>[
             // Icon that gives direct access to the favorites
             // displays "real-time" number of favorites
-            FavoriteButton(
-              child: const Icon(Icons.star),
-              onPressed: () => Navigator.pushNamed(
-                context,
-                '/shortlist',
-              ),
-            )
+            ShortlistButton()
           ]),
       body: StreamBuilder(
         stream: _searchBloc.outSearchState,

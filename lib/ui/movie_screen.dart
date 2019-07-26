@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
-import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
+import 'package:tmsh_flutter/ui/component/shortlist_button.dart';
 
 class MovieScreen extends StatefulWidget {
   final TMDbMovieCard _movieCard;
@@ -18,13 +18,7 @@ class _MovieScreenState extends State<MovieScreen> {
       appBar: AppBar(actions: <Widget>[
         // Icon that gives direct access to the favorites
         // displays "real-time" number of favorites
-        FavoriteButton(
-          child: const Icon(Icons.star),
-          onPressed: () => Navigator.pushNamed(
-            context,
-            '/shortlist',
-          ),
-        )
+        ShortlistButton(),
       ]),
       body: Center(
         child: Text('${widget._movieCard.title}'),

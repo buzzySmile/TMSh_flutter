@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-class FavoriteButton extends StatelessWidget {
+class CountButton extends StatelessWidget {
   final Widget child;
   final VoidCallback onPressed;
+  final int count;
 
-  FavoriteButton({
+  CountButton({
     Key key,
     @required this.child,
+    this.count,
     this.onPressed,
   }) : super(key: key);
 
@@ -32,7 +34,7 @@ class FavoriteButton extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(4.5),
                   child: Text(
-                    "0", // assign "data:" for counter change
+                    this.count.toString(),
                     style: TextStyle(
                       fontSize: 13.0,
                       color: Colors.white,
