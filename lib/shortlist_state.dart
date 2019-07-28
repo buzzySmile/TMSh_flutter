@@ -3,14 +3,24 @@ import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
 @immutable
 class ShortlistState {
-  final List<TMDbMovieCard> shortlist;
+  final Set<TMDbMovieCard> _movies = Set<TMDbMovieCard>();
 
-  ShortlistState({
-    this.shortlist = const [],
-  });
+  ShortlistState();
+
+  ShortlistState.clone(ShortlistState shortlist) {
+    _movies.addAll(shortlist._movies);
+  }
+
+  void add(TMDbMovieCard movie) {
+    _movies.add(movie);
+  }
+
+  void remove(TMDbMovieCard movie) {
+    _movies.remove(movie);
+  }
 
   @override
   String toString() {
-    return 'ShortlistState{shortlist: ${(shortlist).map((movie) => "(${movie.id})${movie.title}")}, }';
+    return 'ShortlistState{shortlist: ${(_movies).map((movie) => "(${movie.id})${movie.title}")}, }';
   }
 }

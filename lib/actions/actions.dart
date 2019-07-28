@@ -1,5 +1,7 @@
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
+class GetShortlistAction {}
+
 class DeleteMovieAction {
   final int id;
 

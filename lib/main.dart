@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:tmsh_flutter/injection.dart';
+import 'package:tmsh_flutter/middleware/middleware.dart';
 import 'package:tmsh_flutter/reducers/shortlist_reducer.dart';
 import 'package:tmsh_flutter/route_generator.dart';
 import 'package:tmsh_flutter/shortlist_state.dart';
@@ -12,8 +13,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final store =
-      Store<ShortlistState>(shortlistReducer, initialState: ShortlistState());
+  final store = Store<ShortlistState>(shortlistReducer,
+      initialState: ShortlistState(), middleware: [shortlistMiddlware]);
 
   @override
   Widget build(BuildContext context) {
