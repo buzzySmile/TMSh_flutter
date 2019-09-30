@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:rxdart/rxdart.dart';
 import 'package:tmsh_flutter/bloc/bloc_provider.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
@@ -43,12 +44,12 @@ class ShortlistBloc extends BlocBase {
     _shortlistEventController.stream.listen(_handleShortlist);
   }
 
-  final _shortlistEventController = StreamController<ShortlistEvent>();
+  final _shortlistEventController = PublishSubject<ShortlistEvent>();
 
   Sink<ShortlistEvent> get inShortlist => _shortlistEventController.sink;
   Stream<ShortlistEvent> get outShortlist => _shortlistEventController.stream;
 
-  final _shortlistStateController = StreamController<ShortlistState>();
+  final _shortlistStateController = PublishSubject<ShortlistState>();
 
   Sink<ShortlistState> get _inShortlistState => _shortlistStateController.sink;
   Stream<ShortlistState> get outShortlistState =>
