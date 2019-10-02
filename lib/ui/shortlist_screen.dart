@@ -15,15 +15,21 @@ class _ShortlistScreenState extends State<ShortlistScreen> {
   ShortlistBloc _shortlistBloc;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _shortlistBloc = BlocProvider.of<ShortlistBloc>(context);
+    _shortlistBloc.inShortlist.add(ShortlistLoad());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('MY SHORTLIST'),
       ),
       body: StreamBuilder(
         stream: _shortlistBloc.outShortlistState,
-        initialData: ShortlistState(_shortlistBloc.shortlist),
+        initialData: ShortlistState.empty(),
         builder:
             (BuildContext context, AsyncSnapshot<ShortlistState> snapshot) {
           List<TMDbMovieCard> shortMovieList = snapshot.data.shortlist;
@@ -37,7 +43,7 @@ class _ShortlistScreenState extends State<ShortlistScreen> {
                         child: MovieCard(
                           movieData: shortMovieList[index],
                           onShortlist: (movie) => _shortlistBloc.inShortlist
-                              .add(ShortlistEvent(movie)),
+                              .add(ShortlistAdd(movie)),
                         ),
                         onTap: () => Navigator.pushNamed(context, '/movie',
                             arguments: shortMovieList[index]),

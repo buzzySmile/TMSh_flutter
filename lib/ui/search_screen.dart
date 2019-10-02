@@ -20,9 +20,14 @@ class _SearchScreenState extends State<SearchScreen> {
   ShortlistBloc _shortlistBloc;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _shortlistBloc = BlocProvider.of<ShortlistBloc>(context);
+    _shortlistBloc.inShortlist.add(ShortlistLoad());
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           // Search bar - TextField for search query
@@ -42,7 +47,7 @@ class _SearchScreenState extends State<SearchScreen> {
           actions: <Widget>[
             StreamBuilder(
               stream: _shortlistBloc.outShortlistState,
-              initialData: ShortlistState(_shortlistBloc.shortlist),
+              initialData: ShortlistState.empty(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 return FavoriteButton(
                   child: const Icon(Icons.star),
@@ -102,7 +107,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: MovieCard(
                   movieData: moviesReady.movies[index],
                   onShortlist: (movie) =>
-                      _shortlistBloc.inShortlist.add(ShortlistEvent(movie)),
+                      _shortlistBloc.inShortlist.add(ShortlistAdd(movie)),
                 ),
                 onTap: () => Navigator.pushNamed(context, '/movie',
                     arguments: moviesReady.movies[index]),

@@ -1,19 +1,43 @@
-import 'dart:async';
-
 import 'package:rxdart/rxdart.dart';
 import 'package:tmsh_flutter/bloc/bloc_provider.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
+import 'package:tmsh_flutter/data/storage_service.dart';
 
 class ShortlistEvent {
+  @override
+  String toString() {
+    return "ShortlistEvent: ";
+  }
+}
+
+class ShortlistLoad extends ShortlistEvent {
+  @override
+  String toString() {
+    return "${super.toString()}LoadMovieList {}";
+  }
+}
+
+class ShortlistAdd extends ShortlistEvent {
+  ShortlistAdd(this._movie);
+
   final TMDbMovieCard _movie;
   TMDbMovieCard get movie => _movie;
 
-  ShortlistEvent(this._movie);
-  factory ShortlistEvent.add(movie) {
-    return ShortlistAdd(movie);
+  @override
+  String toString() {
+    return "${super.toString()}AddMovie {$movie}";
   }
-  factory ShortlistEvent.remove(movie) {
-    return ShortlistRemove(movie);
+}
+
+class ShortlistRemove extends ShortlistEvent {
+  ShortlistRemove(this._movie);
+
+  final TMDbMovieCard _movie;
+  TMDbMovieCard get movie => _movie;
+
+  @override
+  String toString() {
+    return "${super.toString()}RemoveMovie {$movie}";
   }
 }
 
@@ -22,46 +46,60 @@ class ShortlistState {
 
   ShortlistState(this._movieList);
 
+  factory ShortlistState.empty() {
+    return ShortlistState(const []);
+  }
+
   List<TMDbMovieCard> get shortlist => _movieList;
 
   int get shortlistLength => _movieList.length;
 }
 
-class ShortlistAdd extends ShortlistEvent {
-  ShortlistAdd(TMDbMovieCard movie) : super(movie);
-}
-
-class ShortlistRemove extends ShortlistEvent {
-  ShortlistRemove(TMDbMovieCard movie) : super(movie);
-}
-
+// ============================================================================
 class ShortlistBloc extends BlocBase {
-  final Set<TMDbMovieCard> _shortlist;
+  // final Set<TMDbMovieCard> _shortlist;
+  final StorageService _storage;
 
-  List<TMDbMovieCard> get shortlist => _shortlist.toList();
+  // List<TMDbMovieCard> get shortlist => _shortlist.toList();
 
-  ShortlistBloc() : _shortlist = Set<TMDbMovieCard>() {
+  ShortlistBloc(this._storage) /* : _shortlist = Set<TMDbMovieCard>()*/ {
     _shortlistEventController.stream.listen(_handleShortlist);
   }
 
   final _shortlistEventController = PublishSubject<ShortlistEvent>();
 
   Sink<ShortlistEvent> get inShortlist => _shortlistEventController.sink;
-  Stream<ShortlistEvent> get outShortlist => _shortlistEventController.stream;
+  Observable<ShortlistEvent> get outShortlist =>
+      _shortlistEventController.stream;
 
   final _shortlistStateController = PublishSubject<ShortlistState>();
 
   Sink<ShortlistState> get _inShortlistState => _shortlistStateController.sink;
-  Stream<ShortlistState> get outShortlistState =>
+  Observable<ShortlistState> get outShortlistState =>
       _shortlistStateController.stream;
 
-  _handleShortlist(ShortlistEvent event) {
-    if (!_shortlist.contains(event.movie))
-      _shortlist.add(event.movie);
-    else
-      _shortlist.remove(event.movie);
+  _handleShortlist(ShortlistEvent event) async {
+    print(event.toString());
+    if (event is ShortlistLoad) {
+      _inShortlistState.add(await _reloadShortlist());
+    } else if (event is ShortlistAdd) {
+      _storage.saveMovie(event.movie).then(
+        (_) async {
+          _inShortlistState.add(await _reloadShortlist());
+        },
+      );
+    } else if (event is ShortlistRemove) {
+      _storage.removeMovie(event.movie).then(
+        (_) async {
+          _inShortlistState.add(await _reloadShortlist());
+        },
+      );
+    }
+  }
 
-    _inShortlistState.add(ShortlistState(_shortlist.toList()));
+  Future<ShortlistState> _reloadShortlist() async {
+    final shortlist = await _storage.loadShortlist();
+    return ShortlistState(shortlist);
   }
 
   @override
