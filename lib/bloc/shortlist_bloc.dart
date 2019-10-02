@@ -64,6 +64,9 @@ class ShortlistBloc extends BlocBase {
 
   ShortlistBloc(this._storage) /* : _shortlist = Set<TMDbMovieCard>()*/ {
     _shortlistEventController.stream.listen(_handleShortlist);
+    _storage
+        .shortlist()
+        .listen((slist) => _inShortlistState.add(ShortlistState(slist)));
   }
 
   final _shortlistEventController = PublishSubject<ShortlistEvent>();
@@ -81,25 +84,12 @@ class ShortlistBloc extends BlocBase {
   _handleShortlist(ShortlistEvent event) async {
     print(event.toString());
     if (event is ShortlistLoad) {
-      _inShortlistState.add(await _reloadShortlist());
+      //_inShortlistState.add(await _reloadShortlist());
     } else if (event is ShortlistAdd) {
-      _storage.saveMovie(event.movie).then(
-        (_) async {
-          _inShortlistState.add(await _reloadShortlist());
-        },
-      );
+      _storage.saveMovie(event.movie);
     } else if (event is ShortlistRemove) {
-      _storage.removeMovie(event.movie).then(
-        (_) async {
-          _inShortlistState.add(await _reloadShortlist());
-        },
-      );
+      _storage.removeMovie(event.movie);
     }
-  }
-
-  Future<ShortlistState> _reloadShortlist() async {
-    final shortlist = await _storage.loadShortlist();
-    return ShortlistState(shortlist);
   }
 
   @override

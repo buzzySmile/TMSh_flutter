@@ -9,13 +9,18 @@ abstract class StorageService {
   Future<void> removeMovie(TMDbMovieCard movie);
 
   // Stream<List<TMDbMovieCard>> shortlistStream();
-  Future<List<TMDbMovieCard>> loadShortlist();
+  Stream<List<TMDbMovieCard>> shortlist();
 }
 
 class StorageServiceImpl implements StorageService {
   static const String shortlistName = 'shortlist';
 
-  //final _shortlistController = PublishSubject<List<TMDbMovieCard>>();
+  StorageServiceImpl()
+      : this._shortlistSubject = BehaviorSubject<List<TMDbMovieCard>>();
+
+  final BehaviorSubject<List<TMDbMovieCard>> _shortlistSubject;
+
+  bool _loaded = false;
 
   final _store = intMapStoreFactory.store(shortlistName);
 
@@ -23,6 +28,12 @@ class StorageServiceImpl implements StorageService {
 
   @override
   Future saveMovie(TMDbMovieCard movie) async {
+    _shortlistSubject.add(
+      List.unmodifiable([]
+        ..addAll(_shortlistSubject.value ?? [])
+        ..add(movie)),
+    );
+
     final finder = Finder(filter: Filter.equals('id', movie.id));
 
     final key = await _store.findKey(await _database, finder: finder);
@@ -41,22 +52,39 @@ class StorageServiceImpl implements StorageService {
   }
 
   @override
-  Future<List<TMDbMovieCard>> loadShortlist() async {
+  Stream<List<TMDbMovieCard>> shortlist() {
+    if (!_loaded) _loadShortlist();
+
+    return _shortlistSubject.stream;
+  }
+
+  Future _loadShortlist() async {
+    _loaded = true;
     final recordSnapshots = await _store.find(
       await _database,
     );
 
-    print("DB: found recordSnapshots ${recordSnapshots.length} ");
+    print("DB: found recordSnapshots ${recordSnapshots.length}");
 
     // Making a List<Fruit> out of List<RecordSnapshot>
-    return recordSnapshots.map((snapshot) {
+    final List<TMDbMovieCard> loadedList = recordSnapshots.map((snapshot) {
       final movie = TMDbMovieCard.fromJSON(snapshot.value);
       return movie;
     }).toList();
+
+    _shortlistSubject.add(
+      List.unmodifiable([]..addAll(loadedList)),
+    );
   }
 
   @override
   Future removeMovie(TMDbMovieCard movie) async {
+    _shortlistSubject.add(
+      List.unmodifiable([]
+        ..addAll(_shortlistSubject.value ?? [])
+        ..remove(movie)),
+    );
+
     final finder = Finder(filter: Filter.equals('id', movie.id));
     await _store.delete(
       await _database,
