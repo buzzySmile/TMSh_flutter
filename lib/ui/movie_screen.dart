@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tmsh_flutter/bloc/bloc_provider.dart';
-import 'package:tmsh_flutter/bloc/shortlist_bloc.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
 class MovieScreen extends StatefulWidget {
@@ -13,11 +11,8 @@ class MovieScreen extends StatefulWidget {
 }
 
 class _MovieScreenState extends State<MovieScreen> {
-  ShortlistBloc _shortlistBloc;
-
   @override
   Widget build(BuildContext context) {
-    _shortlistBloc = BlocProvider.of<ShortlistBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget._movieCard.title}'),
@@ -28,8 +23,8 @@ class _MovieScreenState extends State<MovieScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
-                child: Image.network(widget._movieCard.posterPath,
-                    fit: BoxFit.cover)),
+                child:
+                    Image.network(widget._movieCard.poster, fit: BoxFit.cover)),
           ),
           Text(
             '${widget._movieCard.overview}',

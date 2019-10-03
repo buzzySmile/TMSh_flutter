@@ -55,6 +55,8 @@ class StorageServiceImpl implements StorageService {
   Stream<List<TMDbMovieCard>> shortlist() {
     if (!_loaded) _loadShortlist();
 
+    print("!!!Shortlist stream called!!!");
+
     return _shortlistSubject.stream;
   }
 

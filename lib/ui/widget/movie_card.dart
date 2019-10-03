@@ -14,7 +14,7 @@ class MovieCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Image.network(movieData.posterPath, fit: BoxFit.cover),
+          Image.network(movieData.poster, fit: BoxFit.cover),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(15.0, 5.0, 10.0, 10.0),
