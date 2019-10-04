@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:rxdart/rxdart.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 import 'package:tmsh_flutter/data/tmdb_api_source.dart';
 
@@ -46,7 +47,7 @@ class SearchBloc {
   int _totalPages = 0;
   String _queryText = '';
 
-  final _searchEventController = StreamController<SearchEvent>();
+  final _searchEventController = PublishSubject<SearchEvent>();
   // sink for input search events
   StreamSink<SearchEvent> get inSearchEvent => _searchEventController.sink;
 
@@ -57,7 +58,12 @@ class SearchBloc {
 
   SearchBloc(this._tmdbClient) {
     // Whenever there is a new Search Event, we want to handle it
-    _searchEventController.stream.listen(_handleSearchEvent);
+    _searchEventController.stream
+        .debounce((_) => TimerStream(true, const Duration(milliseconds: 750)))
+        .listen((event) {
+      print('SearchBLoC receive $event');
+      _handleSearchEvent(event);
+    });
   }
 
   // map SearchEvents to SearchState
