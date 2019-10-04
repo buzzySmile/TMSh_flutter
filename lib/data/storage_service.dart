@@ -8,15 +8,15 @@ abstract class StorageService {
   Future<void> saveMovie(TMDbMovieCard movie);
   Future<void> removeMovie(TMDbMovieCard movie);
 
-  // Stream<List<TMDbMovieCard>> shortlistStream();
   Stream<List<TMDbMovieCard>> shortlist();
 }
 
 class StorageServiceImpl implements StorageService {
   static const String shortlistName = 'shortlist';
 
-  StorageServiceImpl()
-      : this._shortlistSubject = BehaviorSubject<List<TMDbMovieCard>>();
+  StorageServiceImpl([List<TMDbMovieCard> seedValue = const []])
+      : this._shortlistSubject =
+            BehaviorSubject<List<TMDbMovieCard>>.seeded(seedValue);
 
   final BehaviorSubject<List<TMDbMovieCard>> _shortlistSubject;
 
@@ -28,12 +28,6 @@ class StorageServiceImpl implements StorageService {
 
   @override
   Future saveMovie(TMDbMovieCard movie) async {
-    _shortlistSubject.add(
-      List.unmodifiable([]
-        ..addAll(_shortlistSubject.value ?? [])
-        ..add(movie)),
-    );
-
     final finder = Finder(filter: Filter.equals('id', movie.id));
 
     final key = await _store.findKey(await _database, finder: finder);
@@ -62,32 +56,26 @@ class StorageServiceImpl implements StorageService {
 
   Future _loadShortlist() async {
     _loaded = true;
-    final recordSnapshots = await _store.find(
-      await _database,
-    );
 
-    print("DB: found recordSnapshots ${recordSnapshots.length}");
-
-    // Making a List<Fruit> out of List<RecordSnapshot>
-    final List<TMDbMovieCard> loadedList = recordSnapshots.map((snapshot) {
-      final movie = TMDbMovieCard.fromJSON(snapshot.value);
-      return movie;
-    }).toList();
-
-    _shortlistSubject.add(
-      List.unmodifiable([]..addAll(loadedList)),
-    );
+    var query = _store.query();
+    query.onSnapshots(await _database).listen((snapshots) {
+      print("Stream from DB: ${snapshots.length} records");
+      _shortlistSubject.add(
+        List.unmodifiable(
+          []..addAll(snapshots
+              .map(
+                (snapshot) => TMDbMovieCard.fromJSON(snapshot.value),
+              )
+              .toList()),
+        ),
+      );
+    });
   }
 
   @override
   Future removeMovie(TMDbMovieCard movie) async {
-    _shortlistSubject.add(
-      List.unmodifiable([]
-        ..addAll(_shortlistSubject.value ?? [])
-        ..remove(movie)),
-    );
-
     final finder = Finder(filter: Filter.equals('id', movie.id));
+
     await _store.delete(
       await _database,
       finder: finder,

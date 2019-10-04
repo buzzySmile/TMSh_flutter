@@ -18,7 +18,6 @@ class _ShortlistScreenState extends State<ShortlistScreen> {
   void initState() {
     super.initState();
     _shortlistBloc = BlocProvider.of<ShortlistBloc>(context);
-    _shortlistBloc.inShortlist.add(ShortlistLoad());
   }
 
   @override
