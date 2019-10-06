@@ -8,14 +8,19 @@ abstract class StorageService {
   Future<void> saveMovie(TMDbMovieCard movie);
   Future<void> removeMovie(TMDbMovieCard movie);
 
-  // Stream<List<TMDbMovieCard>> shortlistStream();
-  Future<List<TMDbMovieCard>> loadShortlist();
+  Stream<List<TMDbMovieCard>> shortlist();
 }
 
 class StorageServiceImpl implements StorageService {
   static const String shortlistName = 'shortlist';
 
-  //final _shortlistController = PublishSubject<List<TMDbMovieCard>>();
+  StorageServiceImpl([List<TMDbMovieCard> seedValue = const []])
+      : this._shortlistSubject =
+            BehaviorSubject<List<TMDbMovieCard>>.seeded(seedValue);
+
+  final BehaviorSubject<List<TMDbMovieCard>> _shortlistSubject;
+
+  bool _loaded = false;
 
   final _store = intMapStoreFactory.store(shortlistName);
 
@@ -41,23 +46,36 @@ class StorageServiceImpl implements StorageService {
   }
 
   @override
-  Future<List<TMDbMovieCard>> loadShortlist() async {
-    final recordSnapshots = await _store.find(
-      await _database,
-    );
+  Stream<List<TMDbMovieCard>> shortlist() {
+    if (!_loaded) _loadShortlist();
 
-    print("DB: found recordSnapshots ${recordSnapshots.length} ");
+    print("!!!Shortlist stream called!!!");
 
-    // Making a List<Fruit> out of List<RecordSnapshot>
-    return recordSnapshots.map((snapshot) {
-      final movie = TMDbMovieCard.fromJSON(snapshot.value);
-      return movie;
-    }).toList();
+    return _shortlistSubject.stream;
+  }
+
+  Future _loadShortlist() async {
+    _loaded = true;
+
+    var query = _store.query();
+    query.onSnapshots(await _database).listen((snapshots) {
+      print("Stream from DB: ${snapshots.length} records");
+      _shortlistSubject.add(
+        List.unmodifiable(
+          []..addAll(snapshots
+              .map(
+                (snapshot) => TMDbMovieCard.fromJSON(snapshot.value),
+              )
+              .toList()),
+        ),
+      );
+    });
   }
 
   @override
   Future removeMovie(TMDbMovieCard movie) async {
     final finder = Finder(filter: Filter.equals('id', movie.id));
+
     await _store.delete(
       await _database,
       finder: finder,

@@ -10,13 +10,6 @@ class ShortlistEvent {
   }
 }
 
-class ShortlistLoad extends ShortlistEvent {
-  @override
-  String toString() {
-    return "${super.toString()}LoadMovieList {}";
-  }
-}
-
 class ShortlistAdd extends ShortlistEvent {
   ShortlistAdd(this._movie);
 
@@ -57,13 +50,17 @@ class ShortlistState {
 
 // ============================================================================
 class ShortlistBloc extends BlocBase {
-  // final Set<TMDbMovieCard> _shortlist;
   final StorageService _storage;
 
-  // List<TMDbMovieCard> get shortlist => _shortlist.toList();
-
-  ShortlistBloc(this._storage) /* : _shortlist = Set<TMDbMovieCard>()*/ {
-    _shortlistEventController.stream.listen(_handleShortlist);
+  ShortlistBloc(this._storage) {
+    _shortlistEventController.stream.listen((event) {
+      print('ShortlistBLoC receive $event');
+      _handleShortlist(event);
+    });
+    _storage.shortlist().listen((slist) {
+      print('ShortlistBLoC receive storage data');
+      _inShortlistState.add(ShortlistState(slist));
+    });
   }
 
   final _shortlistEventController = PublishSubject<ShortlistEvent>();
@@ -72,34 +69,18 @@ class ShortlistBloc extends BlocBase {
   Observable<ShortlistEvent> get outShortlist =>
       _shortlistEventController.stream;
 
-  final _shortlistStateController = PublishSubject<ShortlistState>();
+  final _shortlistStateController = BehaviorSubject<ShortlistState>();
 
   Sink<ShortlistState> get _inShortlistState => _shortlistStateController.sink;
   Observable<ShortlistState> get outShortlistState =>
       _shortlistStateController.stream;
 
   _handleShortlist(ShortlistEvent event) async {
-    print(event.toString());
-    if (event is ShortlistLoad) {
-      _inShortlistState.add(await _reloadShortlist());
-    } else if (event is ShortlistAdd) {
-      _storage.saveMovie(event.movie).then(
-        (_) async {
-          _inShortlistState.add(await _reloadShortlist());
-        },
-      );
+    if (event is ShortlistAdd) {
+      _storage.saveMovie(event.movie);
     } else if (event is ShortlistRemove) {
-      _storage.removeMovie(event.movie).then(
-        (_) async {
-          _inShortlistState.add(await _reloadShortlist());
-        },
-      );
+      _storage.removeMovie(event.movie);
     }
-  }
-
-  Future<ShortlistState> _reloadShortlist() async {
-    final shortlist = await _storage.loadShortlist();
-    return ShortlistState(shortlist);
   }
 
   @override

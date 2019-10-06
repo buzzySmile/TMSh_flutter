@@ -23,7 +23,6 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     _shortlistBloc = BlocProvider.of<ShortlistBloc>(context);
-    _shortlistBloc.inShortlist.add(ShortlistLoad());
   }
 
   @override
