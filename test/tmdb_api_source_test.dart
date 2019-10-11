@@ -37,10 +37,10 @@ void main() {
           ),
         ).thenAnswer(
           (_) async => http.Response(
-                mockOf('search_response'),
-                200,
-                headers: {'content-type': 'application/json; charset=utf-8'},
-              ),
+            mockOf('search_response'),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          ),
         );
 
         TMDbSearchMovies result = await dataSource.searchMovie(
@@ -53,24 +53,24 @@ void main() {
       },
     );
 
-    // test('throws an error on bad request', () async {
-    //   when(
-    //     mockClient.get(
-    //       argThat(
-    //         startsWith('https://api.themoviedb.org/3/search/movie'),
-    //       ),
-    //     ),
-    //   ).thenAnswer(
-    //     (_) async => http.Response(mockOf('search_response_error'), 400),
-    //   );
+    test('throws an error on bad request', () async {
+      when(
+        mockClient.get(
+          argThat(
+            startsWith('https://api.themoviedb.org/3/search/movie'),
+          ),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response(mockOf('search_response_error'), 400),
+      );
 
-    //   expect(
-    //     () => dataSource.searchMovie(
-    //           query: '',
-    //         ),
-    //     throwsA(TypeMatcher<TMDbSearchError>()),
-    //   );
-    // });
+      expect(
+        () => dataSource.searchMovie(
+          query: '',
+        ),
+        throwsA(TypeMatcher<TMDbSearchError>()),
+      );
+    });
 
     test('makes an HTTP request to a proper URL', () {
       when(
@@ -81,10 +81,10 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => http.Response(
-              mockOf('search_response'),
-              200,
-              headers: {'content-type': 'application/json; charset=utf-8'},
-            ),
+          mockOf('search_response'),
+          200,
+          headers: {'content-type': 'application/json; charset=utf-8'},
+        ),
       );
 
       dataSource.searchMovie(query: 'inception');
@@ -135,10 +135,10 @@ void main() {
           ),
         ).thenAnswer(
           (_) async => http.Response(
-                mockOf('movie_response'),
-                200,
-                headers: {'content-type': 'application/json; charset=UTF-8'},
-              ),
+            mockOf('movie_response'),
+            200,
+            headers: {'content-type': 'application/json; charset=UTF-8'},
+          ),
         );
 
         TMDbMovieCard response =
@@ -159,22 +159,22 @@ void main() {
       },
     );
 
-    // test('throws a TMDbMovieError on a bad request', () {
-    //   when(
-    //     mockClient.get(
-    //       argThat(
-    //         startsWith('https://api.themoviedb.org/3/movie/'),
-    //       ),
-    //     ),
-    //   ).thenAnswer(
-    //     (_) async => http.Response(mockOf('movie_response_error'), 400),
-    //   );
+    test('throws a TMDbMovieError on a bad request', () {
+      when(
+        mockClient.get(
+          argThat(
+            startsWith('https://api.themoviedb.org/3/movie/'),
+          ),
+        ),
+      ).thenAnswer(
+        (_) async => http.Response(mockOf('movie_response_error'), 400),
+      );
 
-    //   expect(
-    //     () => dataSource.fetchMovieInfo(movieId: 27205),
-    //     throwsA(TypeMatcher<TMDbMovieError>()),
-    //   );
-    // });
+      expect(
+        () => dataSource.fetchMovieInfo(movieId: 27205),
+        throwsA(TypeMatcher<TMDbMovieError>()),
+      );
+    });
 
     test('makes HTTP requests to proper URLs', () {
       when(
@@ -183,10 +183,10 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => http.Response(
-              mockOf('movie_response'),
-              200,
-              headers: {'content-type': 'application/json; charset=UTF-8'},
-            ),
+          mockOf('movie_response'),
+          200,
+          headers: {'content-type': 'application/json; charset=UTF-8'},
+        ),
       );
 
       dataSource.fetchMovieInfo(movieId: 11);
