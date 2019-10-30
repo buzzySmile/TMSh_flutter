@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tmsh_flutter/bloc/bloc_provider.dart';
-import 'package:tmsh_flutter/bloc/shortlist_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tmsh_flutter/shortlist_bloc/bloc.dart';
 import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
 import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
-import 'package:tmsh_flutter/bloc/search_bloc.dart';
-import 'package:kiwi/kiwi.dart' as kiwi;
+import 'package:tmsh_flutter/search_bloc/bloc.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key key}) : super(key: key);
@@ -15,14 +14,11 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final SearchBloc _searchBloc = kiwi.Container().resolve<SearchBloc>();
   final ScrollController _scrollController = ScrollController();
-  ShortlistBloc _shortlistBloc;
 
   @override
   void initState() {
     super.initState();
-    _shortlistBloc = BlocProvider.of<ShortlistBloc>(context);
   }
 
   @override
@@ -38,45 +34,40 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 5),
               child: SearchField(
-                onChanged: (text) =>
-                    _searchBloc.inSearchEvent.add(SearchEvent.query(text)),
+                onChanged: (text) => BlocProvider.of<SearchBloc>(context)
+                    .add(SearchEvent.query(text)),
               ),
             ),
           ),
           actions: <Widget>[
-            StreamBuilder(
-              stream: _shortlistBloc.outShortlistState,
-              initialData: ShortlistState.empty(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                return FavoriteButton(
-                  child: const Icon(Icons.star),
-                  count: (snapshot.data is ShortlistState)
-                      ? snapshot.data.shortlistLength
-                      : 0,
-                  onPressed: () => Navigator.pushNamed(
-                    context,
-                    '/shortlist',
-                  ),
-                );
+            BlocBuilder<ShortlistBloc, ShortlistState>(
+              builder: (BuildContext context, ShortlistState state) {
+                if (state is ShortlistLoading) {
+                  return CircularProgressIndicator();
+                }
+                if (state is ShortlistLoaded) {
+                  return FavoriteButton(
+                    child: const Icon(Icons.star),
+                    count: state.movies.length,
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      '/shortlist',
+                    ),
+                  );
+                }
+                return const Icon(Icons.star);
               },
             ),
           ]),
-      body: StreamBuilder(
-        stream: _searchBloc.outSearchState,
-        initialData: SearchStateInit(),
-        builder: (context, AsyncSnapshot<SearchState> snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data is SearchStateInit)
-              return _buildInit();
-            else if (snapshot.data is SearchStateLoading)
-              return _buildLoading();
-            else
-              return buildList(snapshot.data);
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text(snapshot.error.toString()),
-            );
-          }
+      body: BlocBuilder<SearchBloc, SearchState>(
+        builder: (context, SearchState state) {
+          if (state is SearchStateInit) return _buildInit();
+
+          if (state is SearchStateLoading) return _buildLoading();
+          if (state is SearchStateReady) return buildList(context, state);
+          return Center(
+            child: Text('Something went wrong!'),
+          );
         },
       ),
     );
@@ -94,9 +85,10 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget buildList(SearchStateReady moviesReady) {
+  Widget buildList(BuildContext context, SearchStateReady moviesReady) {
     return NotificationListener(
-      onNotification: _handleScrollNotification,
+      onNotification: (onNotify) =>
+          _handleScrollNotification(context, onNotify),
       child: ListView.builder(
           controller: _scrollController,
           itemCount: moviesReady.movies.length,
@@ -106,7 +98,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: MovieCard(
                   movieData: moviesReady.movies[index],
                   onShortlist: (movie) =>
-                      _shortlistBloc.inShortlist.add(ShortlistAdd(movie)),
+                      BlocProvider.of<ShortlistBloc>(context).add(
+                    ShortlistAdd(movie),
+                  ),
                 ),
                 onTap: () => Navigator.pushNamed(context, '/movie',
                     arguments: moviesReady.movies[index]),
@@ -116,17 +110,12 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  bool _handleScrollNotification(ScrollNotification notification) {
+  bool _handleScrollNotification(
+      BuildContext context, ScrollNotification notification) {
     if (notification is ScrollEndNotification &&
         _scrollController.position.extentAfter == 0)
-      _searchBloc.inSearchEvent.add(SearchEvent.next());
+      BlocProvider.of<SearchBloc>(context).add(SearchEvent.next());
 
     return false;
-  }
-
-  @override
-  void dispose() {
-    _searchBloc.dispose();
-    super.dispose();
   }
 }
