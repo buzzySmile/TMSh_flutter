@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:redux_logging/redux_logging.dart';
 import 'package:tmsh_flutter/injection.dart';
 import 'package:tmsh_flutter/middleware/middleware.dart';
 import 'package:tmsh_flutter/reducers/shortlist_reducer.dart';
@@ -13,8 +14,14 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final store = Store<ShortlistState>(shortlistReducer,
-      initialState: ShortlistState(), middleware: [shortlistMiddlware]);
+  final store = Store<ShortlistState>(
+    shortlistReducer,
+    initialState: ShortlistState(),
+    middleware: [
+      LoggingMiddleware.printer(),
+      shortlistMiddlware,
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
