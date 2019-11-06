@@ -31,7 +31,7 @@ class _ViewModel {
 
   static _ViewModel fromStore(Store<ShortlistState> store) {
     return _ViewModel(
-      numMovies: store.state.shortlist.length,
+      numMovies: store.state.movies.length,
     );
   }
 

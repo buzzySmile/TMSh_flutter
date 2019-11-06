@@ -1,26 +1,29 @@
-import 'package:meta/meta.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
-@immutable
-class ShortlistState {
-  final Set<TMDbMovieCard> _movies = Set<TMDbMovieCard>();
+part 'shortlist_state.g.dart';
 
-  ShortlistState();
+abstract class ShortlistState
+    implements Built<ShortlistState, ShortlistStateBuilder> {
+  static Serializer<ShortlistState> get serializer =>
+      _$shortlistStateSerializer;
 
-  ShortlistState.clone(ShortlistState shortlist) {
-    _movies.addAll(shortlist._movies);
-  }
+  BuiltList<TMDbMovieCard> get movies;
 
-  void add(TMDbMovieCard movie) {
-    _movies.add(movie);
-  }
+  ShortlistState._();
 
-  void remove(TMDbMovieCard movie) {
-    _movies.remove(movie);
-  }
+  factory ShortlistState([updates(ShortlistStateBuilder b)]) =>
+      _$ShortlistState((b) => b
+        ..movies = ListBuilder<TMDbMovieCard>([])
+        ..update(updates));
+
+  factory ShortlistState.fromMovies(List<TMDbMovieCard> todos) =>
+      ShortlistState((b) => b..movies = ListBuilder<TMDbMovieCard>(todos));
 
   @override
   String toString() {
-    return 'ShortlistState{shortlist: ${(_movies).map((movie) => "(${movie.id})${movie.title}")}, }';
+    return 'ShortlistState{shortlist: ${(movies).map((movie) => "(${movie.id})${movie.title}")}, }';
   }
 }
