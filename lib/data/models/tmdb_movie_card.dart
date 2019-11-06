@@ -7,6 +7,8 @@ class TMDbMovieCard extends Object {
   final String posterPath;
   final String overview;
 
+  String get poster => posterPath == null ? '' : imageBaseUrl + this.posterPath;
+
   TMDbMovieCard(
       this.id, this.title, this.overview, this.voteAverage, this.posterPath);
 
@@ -15,9 +17,17 @@ class TMDbMovieCard extends Object {
         title = json['title'],
         overview = json['overview'],
         voteAverage = json['vote_average'],
-        posterPath = json['poster_path'] == null
-            ? ''
-            : imageBaseUrl + json['poster_path'];
+        posterPath = json['poster_path'] == null ? '' : json['poster_path'];
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': this.id,
+      'title': this.title,
+      'overview': this.overview,
+      'vote_average': this.voteAverage,
+      'poster_path': this.posterPath,
+    };
+  }
 
   @override
   bool operator ==(dynamic other) =>
@@ -25,4 +35,9 @@ class TMDbMovieCard extends Object {
 
   @override
   int get hashCode => id;
+
+  @override
+  String toString() {
+    return "$id-$title";
+  }
 }

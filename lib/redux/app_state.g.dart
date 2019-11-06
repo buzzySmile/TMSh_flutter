@@ -1,23 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'shortlist_state.dart';
+part of 'app_state.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<ShortlistState> _$shortlistStateSerializer =
-    new _$ShortlistStateSerializer();
+Serializer<AppState> _$appStateSerializer = new _$AppStateSerializer();
 
-class _$ShortlistStateSerializer
-    implements StructuredSerializer<ShortlistState> {
+class _$AppStateSerializer implements StructuredSerializer<AppState> {
   @override
-  final Iterable<Type> types = const [ShortlistState, _$ShortlistState];
+  final Iterable<Type> types = const [AppState, _$AppState];
   @override
-  final String wireName = 'ShortlistState';
+  final String wireName = 'AppState';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, ShortlistState object,
+  Iterable<Object> serialize(Serializers serializers, AppState object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'movies',
@@ -30,10 +28,9 @@ class _$ShortlistStateSerializer
   }
 
   @override
-  ShortlistState deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+  AppState deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new ShortlistStateBuilder();
+    final result = new AppStateBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -54,31 +51,30 @@ class _$ShortlistStateSerializer
   }
 }
 
-class _$ShortlistState extends ShortlistState {
+class _$AppState extends AppState {
   @override
   final BuiltList<TMDbMovieCard> movies;
 
-  factory _$ShortlistState([void Function(ShortlistStateBuilder) updates]) =>
-      (new ShortlistStateBuilder()..update(updates)).build();
+  factory _$AppState([void Function(AppStateBuilder) updates]) =>
+      (new AppStateBuilder()..update(updates)).build();
 
-  _$ShortlistState._({this.movies}) : super._() {
+  _$AppState._({this.movies}) : super._() {
     if (movies == null) {
-      throw new BuiltValueNullFieldError('ShortlistState', 'movies');
+      throw new BuiltValueNullFieldError('AppState', 'movies');
     }
   }
 
   @override
-  ShortlistState rebuild(void Function(ShortlistStateBuilder) updates) =>
+  AppState rebuild(void Function(AppStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ShortlistStateBuilder toBuilder() =>
-      new ShortlistStateBuilder()..replace(this);
+  AppStateBuilder toBuilder() => new AppStateBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ShortlistState && movies == other.movies;
+    return other is AppState && movies == other.movies;
   }
 
   @override
@@ -87,18 +83,17 @@ class _$ShortlistState extends ShortlistState {
   }
 }
 
-class ShortlistStateBuilder
-    implements Builder<ShortlistState, ShortlistStateBuilder> {
-  _$ShortlistState _$v;
+class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
+  _$AppState _$v;
 
   ListBuilder<TMDbMovieCard> _movies;
   ListBuilder<TMDbMovieCard> get movies =>
       _$this._movies ??= new ListBuilder<TMDbMovieCard>();
   set movies(ListBuilder<TMDbMovieCard> movies) => _$this._movies = movies;
 
-  ShortlistStateBuilder();
+  AppStateBuilder();
 
-  ShortlistStateBuilder get _$this {
+  AppStateBuilder get _$this {
     if (_$v != null) {
       _movies = _$v.movies?.toBuilder();
       _$v = null;
@@ -107,23 +102,23 @@ class ShortlistStateBuilder
   }
 
   @override
-  void replace(ShortlistState other) {
+  void replace(AppState other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$ShortlistState;
+    _$v = other as _$AppState;
   }
 
   @override
-  void update(void Function(ShortlistStateBuilder) updates) {
+  void update(void Function(AppStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$ShortlistState build() {
-    _$ShortlistState _$result;
+  _$AppState build() {
+    _$AppState _$result;
     try {
-      _$result = _$v ?? new _$ShortlistState._(movies: movies.build());
+      _$result = _$v ?? new _$AppState._(movies: movies.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -131,7 +126,7 @@ class ShortlistStateBuilder
         movies.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'ShortlistState', _$failedField, e.toString());
+            'AppState', _$failedField, e.toString());
       }
       rethrow;
     }

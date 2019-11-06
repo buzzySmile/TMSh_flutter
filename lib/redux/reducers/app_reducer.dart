@@ -1,11 +1,10 @@
 import 'package:redux/redux.dart';
-import 'package:tmsh_flutter/actions/actions.dart';
+import 'package:tmsh_flutter/redux/actions/actions.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
-import 'package:tmsh_flutter/shortlist_state.dart';
+import 'package:tmsh_flutter/redux/app_state.dart';
 
-ShortlistState shortlistReducer(ShortlistState state, action) {
-  return ShortlistState.fromMovies(
-      moviesReducer(state.movies.toList(), action));
+AppState appReducer(AppState state, action) {
+  return AppState.fromMovies(moviesReducer(state.movies.toList(), action));
 }
 
 // with usage combineReducers from package:redux lib

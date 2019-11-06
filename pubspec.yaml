@@ -21,12 +21,18 @@ dependencies:
     sdk: flutter
   http: ^0.12.0+2
   kiwi: ^0.2.0
-  redux: "^3.0.0"
+  redux: ^3.0.0
   redux_logging: ^0.3.0
   flutter_redux: "^0.5.3"
   built_value: ^6.3.0
   built_value_generator: ^6.3.0
   built_collection: ^4.2.2
+  rxdart: ^0.22.5
+  path_provider: ^1.4.0
+  sembast: ^2.1.0+1
+  bloc: ^2.0.0
+  flutter_bloc: ^2.0.0
+  equatable: ^0.6.1
 
 
 dev_dependencies:
