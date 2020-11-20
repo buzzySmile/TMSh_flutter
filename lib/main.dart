@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:tmsh_flutter/redux/app_state.dart';
 import 'package:redux_logging/redux_logging.dart';
@@ -8,10 +9,7 @@ import 'package:tmsh_flutter/data/shortlist_repository.dart';
 import 'package:tmsh_flutter/data/tmdb_api_source.dart';
 import 'package:tmsh_flutter/injection.dart';
 import 'package:tmsh_flutter/route_generator.dart';
-import 'package:kiwi/kiwi.dart' as kiwi;
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tmsh_flutter/shortlist_bloc/bloc.dart';
-import 'package:tmsh_flutter/search_bloc/bloc.dart';
+import 'package:kiwi/kiwi.dart';
 
 void main() {
   injectDependencies();
@@ -28,20 +26,13 @@ class MyApp extends StatelessWidget {
     ],
   );
 
-  final api = kiwi.Container().resolve<TMDbApiSource>();
-  final storage = kiwi.Container().resolve<ShortlistRepositoryImpl>();
+  final api = KiwiContainer().resolve<TMDbApiSource>();
+  final storage = KiwiContainer().resolve<ShortlistRepositoryImpl>();
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<ShortlistBloc>(
-          builder: (context) => ShortlistBloc(store, storage),
-        ),
-        BlocProvider<SearchBloc>(
-          builder: (context) => SearchBloc(store, api),
-        ),
-      ],
+    return StoreProvider<AppState>(
+      store: store,
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(

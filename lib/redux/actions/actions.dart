@@ -2,6 +2,17 @@ import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
 class GetShortlistAction {}
 
+class SearchMovieAction {
+  final String searchText;
+
+  SearchMovieAction(this.searchText);
+
+  @override
+  String toString() {
+    return 'SearchMovieAction{todo: $searchText}';
+  }
+}
+
 class DeleteMovieAction {
   final int id;
 

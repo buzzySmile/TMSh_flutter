@@ -18,6 +18,9 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
   Iterable<Object> serialize(Serializers serializers, AppState object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
+      'loading',
+      serializers.serialize(object.loading,
+          specifiedType: const FullType(bool)),
       'movies',
       serializers.serialize(object.movies,
           specifiedType:
@@ -38,11 +41,15 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
+        case 'loading':
+          result.loading = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
         case 'movies':
           result.movies.replace(serializers.deserialize(value,
                   specifiedType: const FullType(
                       BuiltList, const [const FullType(TMDbMovieCard)]))
-              as BuiltList<dynamic>);
+              as BuiltList<Object>);
           break;
       }
     }
@@ -53,12 +60,17 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
 
 class _$AppState extends AppState {
   @override
+  final bool loading;
+  @override
   final BuiltList<TMDbMovieCard> movies;
 
   factory _$AppState([void Function(AppStateBuilder) updates]) =>
       (new AppStateBuilder()..update(updates)).build();
 
-  _$AppState._({this.movies}) : super._() {
+  _$AppState._({this.loading, this.movies}) : super._() {
+    if (loading == null) {
+      throw new BuiltValueNullFieldError('AppState', 'loading');
+    }
     if (movies == null) {
       throw new BuiltValueNullFieldError('AppState', 'movies');
     }
@@ -74,17 +86,23 @@ class _$AppState extends AppState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AppState && movies == other.movies;
+    return other is AppState &&
+        loading == other.loading &&
+        movies == other.movies;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, movies.hashCode));
+    return $jf($jc($jc(0, loading.hashCode), movies.hashCode));
   }
 }
 
 class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState _$v;
+
+  bool _loading;
+  bool get loading => _$this._loading;
+  set loading(bool loading) => _$this._loading = loading;
 
   ListBuilder<TMDbMovieCard> _movies;
   ListBuilder<TMDbMovieCard> get movies =>
@@ -95,6 +113,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
 
   AppStateBuilder get _$this {
     if (_$v != null) {
+      _loading = _$v.loading;
       _movies = _$v.movies?.toBuilder();
       _$v = null;
     }
@@ -118,7 +137,8 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState build() {
     _$AppState _$result;
     try {
-      _$result = _$v ?? new _$AppState._(movies: movies.build());
+      _$result =
+          _$v ?? new _$AppState._(loading: loading, movies: movies.build());
     } catch (_) {
       String _$failedField;
       try {
