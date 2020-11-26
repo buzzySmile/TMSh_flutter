@@ -1,20 +1,19 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:kiwi/kiwi.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 import 'package:tmsh_flutter/data/tmdb_api_source.dart';
 import './bloc.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  final TMDbApiSource _tmdbClient;
+  final TMDbApiSource _tmdbClient = KiwiContainer().resolve<TMDbApiSource>();
 
   final List<TMDbMovieCard> _movieList = <TMDbMovieCard>[];
   int _pageIndex = 1;
   int _totalPages = 0;
   String _queryText = '';
 
-  SearchBloc(
-    this._tmdbClient,
-  ) : super(SearchStateInit());
+  SearchBloc() : super(SearchStateInit());
 
   // @override
   // Stream<Transition<SearchEvent, SearchState>>transformEvents(
@@ -31,6 +30,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   @override
   Stream<SearchState> mapEventToState(SearchEvent event) async* {
+    print('>>> Search BLoC: $event');
     // in case NEW search query
     if (event is SearchEventQuery) {
       _resetQuery();

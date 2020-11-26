@@ -6,7 +6,6 @@ import 'package:redux_logging/redux_logging.dart';
 import 'package:tmsh_flutter/redux/middleware/middleware.dart';
 import 'package:tmsh_flutter/redux/reducers/app_reducer.dart';
 import 'package:tmsh_flutter/data/shortlist_repository.dart';
-import 'package:tmsh_flutter/data/tmdb_api_source.dart';
 import 'package:tmsh_flutter/injection.dart';
 import 'package:tmsh_flutter/route_generator.dart';
 import 'package:kiwi/kiwi.dart';
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
     ],
   );
 
-  final api = KiwiContainer().resolve<TMDbApiSource>();
+  // final api = KiwiContainer().resolve<TMDbApiSource>();
   final storage = KiwiContainer().resolve<ShortlistRepositoryImpl>();
 
   @override

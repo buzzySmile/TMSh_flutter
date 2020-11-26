@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 import 'package:tmsh_flutter/ui/movie_screen.dart';
-import 'package:tmsh_flutter/ui/search_screen.dart';
 import 'package:tmsh_flutter/ui/shortlist_screen.dart';
+import 'package:tmsh_flutter/ui/view/search_screen_view.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -10,7 +10,7 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (context) => SearchScreen());
+        return MaterialPageRoute(builder: (context) => SearchScreenView());
       case '/movie':
         if (args is TMDbMovieCard) {
           return MaterialPageRoute(builder: (context) => MovieScreen(args));

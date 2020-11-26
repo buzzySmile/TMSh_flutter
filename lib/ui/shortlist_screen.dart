@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:tmsh_flutter/redux/app_state.dart';
-import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 
 class ShortlistScreen extends StatefulWidget {
