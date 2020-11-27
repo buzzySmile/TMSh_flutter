@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
 import 'package:kiwi/kiwi.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
@@ -15,18 +15,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   SearchBloc() : super(SearchStateInit());
 
-  // @override
-  // Stream<Transition<SearchEvent, SearchState>>transformEvents(
-  //   Stream<SearchEvent> events,
-  //   Stream<Transition<SearchEvent, SearchState>> Function(SearchEvent event) next,
-  // ) {
-  //   // return (events as Observable<SearchEvent>)
-  //   return (events as Observable<SearchEvent>)
-  //       .debounceTime(
-  //         Duration(milliseconds: 750),
-  //       )
-  //       .switchMap(next);
-  // }
+  @override
+  Stream<Transition<SearchEvent, SearchState>> transformEvents(
+    Stream<SearchEvent> events,
+    TransitionFunction<SearchEvent, SearchState> next,
+  ) {
+    return events
+        .debounceTime(const Duration(milliseconds: 750))
+        .switchMap(next);
+  }
 
   @override
   Stream<SearchState> mapEventToState(SearchEvent event) async* {

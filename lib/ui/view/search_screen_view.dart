@@ -9,6 +9,7 @@ class SearchScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SearchBloc>(
+      lazy: false,
       create: (_) => SearchBloc(),
       child: SearchScreen(),
     );

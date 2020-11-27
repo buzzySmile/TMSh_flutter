@@ -51,10 +51,18 @@ class _SearchScreenState extends State<SearchScreen> {
           ]),
       body: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, SearchState state) {
-          if (state is SearchStateInit) return _buildInit();
+          if (state is SearchStateInit) {
+            return _buildInit();
+          }
 
-          if (state is SearchStateLoading) return _buildLoading();
-          if (state is SearchStateReady) return buildList(context, state);
+          if (state is SearchStateLoading) {
+            return _buildLoading();
+          }
+
+          if (state is SearchStateReady) {
+            return _buildList(context, state);
+          }
+
           return Center(
             child: Text('Something went wrong!'),
           );
@@ -75,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget buildList(BuildContext context, SearchStateReady moviesReady) {
+  Widget _buildList(BuildContext context, SearchStateReady moviesReady) {
     return NotificationListener(
       onNotification: (onNotify) =>
           _handleScrollNotification(context, onNotify),
@@ -99,7 +107,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   bool _handleScrollNotification(
-      BuildContext context, ScrollNotification notification) {
+    BuildContext context,
+    ScrollNotification notification,
+  ) {
     if (notification is ScrollEndNotification &&
         _scrollController.position.extentAfter == 0)
       BlocProvider.of<SearchBloc>(context).add(SearchEvent.next());

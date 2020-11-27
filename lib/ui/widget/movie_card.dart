@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
+import 'package:tmsh_flutter/redux/actions/actions.dart';
+import 'package:tmsh_flutter/redux/app_state.dart';
 
 class MovieCard extends StatelessWidget {
   final TMDbMovieCard movieData;
   final ValueChanged<TMDbMovieCard> onShortlist;
 
-  MovieCard({Key key, this.movieData, this.onShortlist}) : super(key: key);
+  MovieCard({
+    Key key,
+    this.movieData,
+    this.onShortlist,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +61,21 @@ class MovieCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      InkWell(
-                        child: const Icon(
-                          Icons.star,
-                          color: Colors.black38,
-                        ),
-                        onTap: () => this.onShortlist(movieData),
-                      )
+                      StoreConnector<AppState, _ViewModel>(
+                        converter: (store) =>
+                            _ViewModel.fromStore(store, movieData),
+                        builder: (context, vm) {
+                          return InkWell(
+                            child: Icon(
+                              Icons.star,
+                              color: vm.isFavorite
+                                  ? Colors.yellow
+                                  : Colors.black38,
+                            ),
+                            onTap: () => vm.onCommitMovie(movieData),
+                          );
+                        },
+                      ),
                     ],
                   )
                 ],
@@ -68,6 +84,26 @@ class MovieCard extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class _ViewModel {
+  final bool isFavorite;
+  final Function(TMDbMovieCard) onCommitMovie;
+
+  _ViewModel({
+    this.isFavorite,
+    this.onCommitMovie,
+  });
+
+  factory _ViewModel.fromStore(
+    Store<AppState> store,
+    TMDbMovieCard movie,
+  ) {
+    return _ViewModel(
+      isFavorite: store.state.movies.contains(movie),
+      onCommitMovie: (movie) => store.dispatch(CommitMovieAction(movie)),
     );
   }
 }

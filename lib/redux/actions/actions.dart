@@ -1,6 +1,22 @@
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
-class GetShortlistAction {}
+class GetShortlistAction {
+  @override
+  String toString() {
+    return 'GetShortlistAction{}';
+  }
+}
+
+class ShortlistLoadedAction {
+  final List<TMDbMovieCard> movies;
+
+  ShortlistLoadedAction(this.movies);
+
+  @override
+  String toString() {
+    return 'ShortlistLoadedAction{$movies}';
+  }
+}
 
 class SearchMovieAction {
   final String searchText;
@@ -13,24 +29,13 @@ class SearchMovieAction {
   }
 }
 
-class DeleteMovieAction {
-  final int id;
-
-  DeleteMovieAction(this.id);
-
-  @override
-  String toString() {
-    return 'DeleteMovieAction{id: $id}';
-  }
-}
-
-class AddMovieAction {
+class CommitMovieAction {
   final TMDbMovieCard movie;
 
-  AddMovieAction(this.movie);
+  CommitMovieAction(this.movie);
 
   @override
   String toString() {
-    return 'AddMovieAction{todo: $movie}';
+    return 'CommitMovieAction{$movie}';
   }
 }

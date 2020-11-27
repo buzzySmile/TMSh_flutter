@@ -1,29 +1,29 @@
 import 'package:redux/redux.dart';
 import 'package:tmsh_flutter/redux/actions/actions.dart';
-import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 import 'package:tmsh_flutter/redux/app_state.dart';
 
-AppState appReducer(AppState state, action) {
-  return AppState.fromMovies(moviesReducer(state.movies.toList(), action));
-}
-
 // with usage combineReducers from package:redux lib
-final Reducer<List<TMDbMovieCard>> moviesReducer =
-    combineReducers<List<TMDbMovieCard>>([
-  TypedReducer<List<TMDbMovieCard>, AddMovieAction>(_addMovie),
-  TypedReducer<List<TMDbMovieCard>, DeleteMovieAction>(_deleteMovie),
+final Reducer<AppState> appReducer = combineReducers<AppState>([
+  TypedReducer<AppState, ShortlistLoadedAction>(_initShortlist),
+  TypedReducer<AppState, CommitMovieAction>(_addMovie),
 ]);
 
-List<TMDbMovieCard> _addMovie(
-  List<TMDbMovieCard> movies,
-  AddMovieAction action,
+AppState _initShortlist(
+  AppState state,
+  ShortlistLoadedAction action,
 ) {
-  return List.from(movies)..add(action.movie);
+  return state.rebuild((b) => b..movies.addAll(action.movies));
 }
 
-List<TMDbMovieCard> _deleteMovie(
-  List<TMDbMovieCard> movies,
-  DeleteMovieAction action,
+AppState _addMovie(
+  AppState state,
+  CommitMovieAction action,
 ) {
-  return List.from(movies).where((movie) => movie.id != action.id);
+  if (state.movies.contains(action.movie)) {
+    return state.rebuild((b) => b..movies.remove(action.movie));
+    // return List.from(state.movies).where((movie) => movie.id != action.movie.id);
+  } else {
+    return state.rebuild((b) => b..movies.add(action.movie));
+    // return List.from(state.movies)..add(action.movie);
+  }
 }
