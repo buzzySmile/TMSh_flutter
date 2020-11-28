@@ -7,11 +7,9 @@ import 'package:tmsh_flutter/redux/app_state.dart';
 
 class MovieCard extends StatelessWidget {
   final TMDbMovieCard movieData;
+  final ValueChanged<TMDbMovieCard> onShortlist;
 
-  MovieCard({
-    Key key,
-    this.movieData,
-  }) : super(key: key);
+  MovieCard({Key key, this.movieData, this.onShortlist}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

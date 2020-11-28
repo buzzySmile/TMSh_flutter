@@ -5,6 +5,7 @@ import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
 import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
 
+
 class SearchScreen extends StatefulWidget {
   SearchScreen({
     Key key,
@@ -61,7 +62,7 @@ class _SearchScreenState extends State<SearchScreen> {
           if (state is SearchStateReady) {
             return _buildList(context, state);
           }
-
+          
           return Center(
             child: Text('Something went wrong!'),
           );
@@ -94,6 +95,10 @@ class _SearchScreenState extends State<SearchScreen> {
               child: GestureDetector(
                 child: MovieCard(
                   movieData: moviesReady.movies[index],
+                  onShortlist: (movie) =>
+                      BlocProvider.of<ShortlistBloc>(context).add(
+                    ShortlistAdd(movie),
+                  ),
                 ),
                 onTap: () => Navigator.pushNamed(
                   context,
