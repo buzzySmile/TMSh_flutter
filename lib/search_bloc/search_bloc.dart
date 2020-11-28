@@ -27,7 +27,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   @override
   Stream<SearchState> mapEventToState(SearchEvent event) async* {
-    print('>>> Search BLoC: $event');
     // in case NEW search query
     if (event is SearchEventQuery) {
       _resetQuery();

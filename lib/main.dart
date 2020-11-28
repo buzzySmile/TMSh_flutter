@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:redux_logging/redux_logging.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:tmsh_flutter/redux/actions/actions.dart';
 import 'package:tmsh_flutter/redux/app_state.dart';
-import 'package:redux_logging/redux_logging.dart';
 import 'package:tmsh_flutter/redux/middleware/middleware.dart';
 import 'package:tmsh_flutter/redux/reducers/app_reducer.dart';
 import 'package:tmsh_flutter/injection.dart';

@@ -5,6 +5,8 @@ import 'package:tmsh_flutter/data/database.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
 abstract class ShortlistRepository {
+  List<TMDbMovieCard> get value;
+
   Future<void> saveMovie(TMDbMovieCard movie);
   Future<void> removeMovie(TMDbMovieCard movie);
 
@@ -27,21 +29,34 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
   Future<Database> get _database async => await AppDatabase.instance.database;
 
   @override
+  List<TMDbMovieCard> get value => _shortlistSubject.value;
+
+  @override
   Future saveMovie(TMDbMovieCard movie) async {
     final finder = Finder(filter: Filter.equals('id', movie.id));
 
-    final key = await _store.findKey(await _database, finder: finder);
-    print('Key for ${movie.title} = $key');
+    final key = await _store.findKey(
+      await _database,
+      finder: finder,
+    );
+
     if (key == null) {
-      final savedKey = await _store.add(await _database, movie.toMap());
-      print('Movie ${movie.title} saved with key $savedKey');
+      _store
+          .add(
+            await _database,
+            movie.toMap(),
+          )
+          .then((savedKey) =>
+              print('Movie ${movie.title} saved with key $savedKey'));
     } else {
-      final count = await _store.update(
-        await _database,
-        movie.toMap(),
-        finder: finder,
-      );
-      print('Movie ${movie.title} with key $key updated $count times ');
+      _store
+          .update(
+            await _database,
+            movie.toMap(),
+            finder: finder,
+          )
+          .then((count) => print(
+              'Movie ${movie.title} with key $key updated $count times '));
     }
   }
 

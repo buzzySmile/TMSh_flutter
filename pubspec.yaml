@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   equatable: ^1.2.5
+  rxdart: ^0.24.1
   http: ^0.12.2
   kiwi: ^2.1.1
   redux: ^4.0.0+3
@@ -18,7 +19,6 @@ dependencies:
   built_value: ^7.1.0
   built_value_generator: ^7.1.0
   built_collection: ^4.2.2
-  rxdart: ^0.24.1
   path_provider: ^1.4.0
   sembast: ^2.1.0+1
   bloc: ^6.1.0

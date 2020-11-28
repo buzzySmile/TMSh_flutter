@@ -24,6 +24,8 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
 
   @override
   String toString() {
-    return 'AppState{shortlist: ${(movies).map((movie) => "(${movie.id})${movie.title}")}, }';
+    final moviesString =
+        movies.map((movie) => '\t\t[${movie.id}]: ${movie.title}').join('\n');
+    return '\n\tloading: $loading,\n\tshortlist:\n$moviesString \n}';
   }
 }

@@ -36,7 +36,6 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.only(left: 5),
               child: SearchField(
                 onChanged: (text) {
-                  print('Search $text');
                   BlocProvider.of<SearchBloc>(context)
                       .add(SearchEvent.query(text));
                   // context.read<SearchBloc>().add(SearchEvent.query(text));
@@ -95,11 +94,12 @@ class _SearchScreenState extends State<SearchScreen> {
               child: GestureDetector(
                 child: MovieCard(
                   movieData: moviesReady.movies[index],
-                  onShortlist: (movie) => print('>>> ADD/REMOVE MOVIE'),
-                  // BlocProvider.of<ShortlistBloc>(context).add(ShortlistAdd(movie),
                 ),
-                onTap: () => Navigator.pushNamed(context, '/movie',
-                    arguments: moviesReady.movies[index]),
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  '/movie',
+                  arguments: moviesReady.movies[index],
+                ),
               ),
             );
           }),
@@ -108,7 +108,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   bool _handleScrollNotification(
     BuildContext context,
-    ScrollNotification notification,
+    Notification notification,
   ) {
     if (notification is ScrollEndNotification &&
         _scrollController.position.extentAfter == 0)
