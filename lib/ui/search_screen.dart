@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tmsh_flutter/shortlist_bloc/bloc.dart';
+import 'package:tmsh_flutter/search_bloc/bloc.dart';
 import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
 import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
-import 'package:tmsh_flutter/search_bloc/bloc.dart';
+
 
 class SearchScreen extends StatefulWidget {
-  SearchScreen({Key key}) : super(key: key);
+  SearchScreen({
+    Key key,
+  }) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -34,37 +36,33 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 5),
               child: SearchField(
-                onChanged: (text) => BlocProvider.of<SearchBloc>(context)
-                    .add(SearchEvent.query(text)),
+                onChanged: (text) {
+                  BlocProvider.of<SearchBloc>(context)
+                      .add(SearchEvent.query(text));
+                  // context.read<SearchBloc>().add(SearchEvent.query(text));
+                },
               ),
             ),
           ),
           actions: <Widget>[
-            BlocBuilder<ShortlistBloc, ShortlistState>(
-              builder: (BuildContext context, ShortlistState state) {
-                if (state is ShortlistLoading) {
-                  return CircularProgressIndicator();
-                }
-                if (state is ShortlistLoaded) {
-                  return FavoriteButton(
-                    child: const Icon(Icons.star),
-                    count: state.movies.length,
-                    onPressed: () => Navigator.pushNamed(
-                      context,
-                      '/shortlist',
-                    ),
-                  );
-                }
-                return const Icon(Icons.star);
-              },
+            FavoriteButton(
+              icon: const Icon(Icons.star),
             ),
           ]),
       body: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, SearchState state) {
-          if (state is SearchStateInit) return _buildInit();
+          if (state is SearchStateInit) {
+            return _buildInit();
+          }
 
-          if (state is SearchStateLoading) return _buildLoading();
-          if (state is SearchStateReady) return buildList(context, state);
+          if (state is SearchStateLoading) {
+            return _buildLoading();
+          }
+
+          if (state is SearchStateReady) {
+            return _buildList(context, state);
+          }
+          
           return Center(
             child: Text('Something went wrong!'),
           );
@@ -85,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget buildList(BuildContext context, SearchStateReady moviesReady) {
+  Widget _buildList(BuildContext context, SearchStateReady moviesReady) {
     return NotificationListener(
       onNotification: (onNotify) =>
           _handleScrollNotification(context, onNotify),
@@ -102,8 +100,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     ShortlistAdd(movie),
                   ),
                 ),
-                onTap: () => Navigator.pushNamed(context, '/movie',
-                    arguments: moviesReady.movies[index]),
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  '/movie',
+                  arguments: moviesReady.movies[index],
+                ),
               ),
             );
           }),
@@ -111,7 +112,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   bool _handleScrollNotification(
-      BuildContext context, ScrollNotification notification) {
+    BuildContext context,
+    Notification notification,
+  ) {
     if (notification is ScrollEndNotification &&
         _scrollController.position.extentAfter == 0)
       BlocProvider.of<SearchBloc>(context).add(SearchEvent.next());

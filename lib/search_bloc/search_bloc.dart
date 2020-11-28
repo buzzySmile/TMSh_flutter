@@ -1,34 +1,29 @@
-import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
+import 'package:kiwi/kiwi.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 import 'package:tmsh_flutter/data/tmdb_api_source.dart';
 import './bloc.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  final TMDbApiSource _tmdbClient;
+  final TMDbApiSource _tmdbClient = KiwiContainer().resolve<TMDbApiSource>();
 
   final List<TMDbMovieCard> _movieList = <TMDbMovieCard>[];
   int _pageIndex = 1;
   int _totalPages = 0;
   String _queryText = '';
 
-  SearchBloc(this._tmdbClient);
+  SearchBloc() : super(SearchStateInit());
 
   @override
-  Stream<SearchState> transformEvents(
+  Stream<Transition<SearchEvent, SearchState>> transformEvents(
     Stream<SearchEvent> events,
-    Stream<SearchState> Function(SearchEvent event) next,
+    TransitionFunction<SearchEvent, SearchState> next,
   ) {
-    return (events as Observable<SearchEvent>)
-        .debounceTime(
-          Duration(milliseconds: 750),
-        )
+    return events
+        .debounceTime(const Duration(milliseconds: 750))
         .switchMap(next);
   }
-
-  @override
-  SearchState get initialState => SearchStateInit();
 
   @override
   Stream<SearchState> mapEventToState(SearchEvent event) async* {
