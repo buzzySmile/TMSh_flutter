@@ -1,20 +1,21 @@
+import 'dart:developer' as developer;
+
 import 'package:rxdart/rxdart.dart';
 import 'package:sembast/sembast.dart';
 
-import 'package:tmsh_flutter/data/database.dart';
+import 'package:tmsh_flutter/data/databases/database.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
-abstract class StorageService {
-  Future<void> saveMovie(TMDbMovieCard movie);
-  Future<void> removeMovie(TMDbMovieCard movie);
+import './repository.dart';
 
-  Stream<List<TMDbMovieCard>> shortlist();
-}
-
-class StorageServiceImpl implements StorageService {
+class SembastShortlistRepository implements ShortlistRepository {
   static const String shortlistName = 'shortlist';
 
-  StorageServiceImpl([List<TMDbMovieCard> seedValue = const []])
+  void dprint(String msg, {Object error}) =>
+      developer.log(msg, name: '>>> ShortlistDB' /*, error: jsonEncode(error)*/
+          );
+
+  SembastShortlistRepository([List<TMDbMovieCard> seedValue = const []])
       : this._shortlistSubject =
             BehaviorSubject<List<TMDbMovieCard>>.seeded(seedValue);
 
@@ -24,24 +25,37 @@ class StorageServiceImpl implements StorageService {
 
   final _store = intMapStoreFactory.store(shortlistName);
 
-  Future<Database> get _database async => await AppDatabase.instance.database;
+  Future<Database> get _database async => await SembastDb.instance.database;
+
+  @override
+  List<TMDbMovieCard> get value => _shortlistSubject.value;
 
   @override
   Future saveMovie(TMDbMovieCard movie) async {
     final finder = Finder(filter: Filter.equals('id', movie.id));
 
-    final key = await _store.findKey(await _database, finder: finder);
-    print('Key for ${movie.title} = $key');
+    final key = await _store.findKey(
+      await _database,
+      finder: finder,
+    );
+
     if (key == null) {
-      final savedKey = await _store.add(await _database, movie.toMap());
-      print('Movie ${movie.title} saved with key $savedKey');
+      _store
+          .add(
+            await _database,
+            movie.toMap(),
+          )
+          .then((savedKey) =>
+              dprint('Movie ${movie.title} saved with key $savedKey'));
     } else {
-      final count = await _store.update(
-        await _database,
-        movie.toMap(),
-        finder: finder,
-      );
-      print('Movie ${movie.title} with key $key updated $count times ');
+      _store
+          .update(
+            await _database,
+            movie.toMap(),
+            finder: finder,
+          )
+          .then((count) => dprint(
+              'Movie ${movie.title} with key $key updated $count times '));
     }
   }
 
@@ -49,7 +63,7 @@ class StorageServiceImpl implements StorageService {
   Stream<List<TMDbMovieCard>> shortlist() {
     if (!_loaded) _loadShortlist();
 
-    print("!!!Shortlist stream called!!!");
+    dprint("!!!Shortlist stream called!!!");
 
     return _shortlistSubject.stream;
   }
@@ -59,7 +73,7 @@ class StorageServiceImpl implements StorageService {
 
     var query = _store.query();
     query.onSnapshots(await _database).listen((snapshots) {
-      print("Stream from DB: ${snapshots.length} records");
+      dprint("Stream from DB: ${snapshots.length} records");
       _shortlistSubject.add(
         List.unmodifiable(
           []..addAll(snapshots

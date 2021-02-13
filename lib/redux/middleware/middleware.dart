@@ -1,10 +1,10 @@
 import 'package:kiwi/kiwi.dart';
 import 'package:redux/redux.dart';
-import 'package:tmsh_flutter/data/shortlist_repository.dart';
+import 'package:tmsh_flutter/data/repositories/repository.dart';
 import 'package:tmsh_flutter/redux/actions/actions.dart';
 import 'package:tmsh_flutter/redux/app_state.dart';
 
-final storage = KiwiContainer().resolve<ShortlistRepositoryImpl>();
+final storage = KiwiContainer().resolve<SembastShortlistRepository>();
 
 void saveShortlist(AppState state) async {}
 
