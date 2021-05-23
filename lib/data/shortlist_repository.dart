@@ -72,7 +72,7 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
   Future _loadShortlist() async {
     _loaded = true;
 
-    var query = _store.query() as QueryRef<int, Map<String, Object>>;
+    final query = _store.query();
     query.onSnapshots(await _database).listen((snapshots) {
       print("Stream from DB: ${snapshots.length} records");
       _shortlistSubject.add(

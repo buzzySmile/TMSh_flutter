@@ -5,7 +5,7 @@ import 'package:tmsh_flutter/redux/app_state.dart';
 
 // with usage combineReducers from package:redux lib
 final Reducer<AppState> appReducer = combineReducers<AppState>([
-  TypedReducer<AppState, ShortlistLoadedAction>(_initShortlist) as AppState Function(AppState, dynamic),
+  TypedReducer<AppState, ShortlistLoadedAction>(_initShortlist),
 ]);
 
 AppState _initShortlist(

@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:matcher/matcher.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import 'package:tmsh_flutter/data/api_key.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_error.dart';

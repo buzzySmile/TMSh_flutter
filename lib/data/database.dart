@@ -14,8 +14,7 @@ class AppDatabase {
 
   static AppDatabase get instance => _singleton;
 
-  Future<Database> get database async =>
-      _database ??= await (_openDatabase() as FutureOr<Database>);
+  Future<Database> get database async => _database ??= await _openDatabase();
 
   Future _openDatabase() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();

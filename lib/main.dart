@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     appReducer,
     initialState: AppState(),
     middleware: [
-      LoggingMiddleware.printer() as dynamic Function(Store<AppState>, dynamic, dynamic Function(dynamic)),
+      LoggingMiddleware.printer(),
       appMiddlware,
     ],
   );
