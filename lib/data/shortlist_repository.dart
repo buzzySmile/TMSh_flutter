@@ -44,7 +44,7 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
       _store
           .add(
             await _database,
-            movie.toMap(),
+            movie.toJson(),
           )
           .then((savedKey) =>
               print('Movie ${movie.title} saved with key $savedKey'));
@@ -52,7 +52,7 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
       _store
           .update(
             await _database,
-            movie.toMap(),
+            movie.toJson(),
             finder: finder,
           )
           .then((count) => print(
@@ -72,14 +72,14 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
   Future _loadShortlist() async {
     _loaded = true;
 
-    var query = _store.query();
+    var query = _store.query() as QueryRef<int, Map<String, Object>>;
     query.onSnapshots(await _database).listen((snapshots) {
       print("Stream from DB: ${snapshots.length} records");
       _shortlistSubject.add(
         List.unmodifiable(
           []..addAll(snapshots
               .map(
-                (snapshot) => TMDbMovieCard.fromJSON(snapshot.value),
+                (snapshot) => TMDbMovieCard.fromJson(snapshot.value),
               )
               .toList()),
         ),

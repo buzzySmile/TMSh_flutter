@@ -1,9 +1,9 @@
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 
 class TMDbSearchMovies {
-  final int pageIndex;
-  final int totalResults;
-  final int totalPages;
+  final int? pageIndex;
+  final int? totalResults;
+  final int? totalPages;
   final List<TMDbMovieCard> movies;
 
   TMDbSearchMovies.fromJSON(Map<String, dynamic> json)
@@ -11,6 +11,6 @@ class TMDbSearchMovies {
         totalResults = json['total_results'],
         totalPages = json['total_pages'],
         movies = (json['results'] as List)
-            .map((json) => TMDbMovieCard.fromJSON(json))
+            .map((json) => TMDbMovieCard.fromJson(json))
             .toList();
 }

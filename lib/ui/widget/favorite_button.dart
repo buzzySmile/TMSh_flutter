@@ -6,8 +6,8 @@ class FavoriteButton extends StatelessWidget {
   final Widget icon;
 
   FavoriteButton({
-    Key key,
-    @required this.icon,
+    Key? key,
+    required this.icon,
   }) : super(key: key);
 
   @override
@@ -37,7 +37,7 @@ class FavoriteButton extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(4.5),
                       child: Text(
-                        '${store.state.movies.length}',
+                        '${store.state.movies!.length}',
                         style: TextStyle(
                           fontSize: 13.0,
                           color: Colors.white,

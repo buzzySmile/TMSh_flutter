@@ -8,13 +8,13 @@ part 'app_state.g.dart';
 abstract class AppState implements Built<AppState, AppStateBuilder> {
   static Serializer<AppState> get serializer => _$appStateSerializer;
 
-  bool get loading;
+  bool? get loading;
 
-  BuiltList<TMDbMovieCard> get movies;
+  BuiltList<TMDbMovieCard>? get movies;
 
   AppState._();
 
-  factory AppState([updates(AppStateBuilder b)]) => _$AppState((b) => b
+  factory AppState([updates(AppStateBuilder b)?]) => _$AppState((b) => b
     ..loading = false
     ..movies = ListBuilder<TMDbMovieCard>([])
     ..update(updates));
@@ -25,7 +25,7 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   @override
   String toString() {
     final moviesString =
-        movies.map((movie) => '\t\t[${movie.id}]: ${movie.title}').join('\n');
+        movies!.map((movie) => '\t\t[${movie.id}]: ${movie.title}').join('\n');
     return '\n\tloading: $loading,\n\tshortlist:\n$moviesString \n}';
   }
 }

@@ -5,7 +5,7 @@ import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 
 class ShortlistScreen extends StatefulWidget {
   ShortlistScreen({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -22,12 +22,12 @@ class _ShortlistScreenState extends State<ShortlistScreen> {
       body: StoreBuilder<AppState>(
         builder: (context, store) {
           return ListView.builder(
-              itemCount: store.state.movies.length,
+              itemCount: store.state.movies!.length,
               itemBuilder: (BuildContext context, int index) {
                 return Card(
                   child: GestureDetector(
                     child: MovieCard(
-                      movieData: store.state.movies[index],
+                      movieData: store.state.movies![index],
                       // onShortlist: (movie) =>
                       //     BlocProvider.of<ShortlistBloc>(context)
                       //         .add(ShortlistAdd(movie)),

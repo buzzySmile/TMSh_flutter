@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class CountButton extends StatelessWidget {
   final Widget child;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final int count;
 
   CountButton({
-    Key key,
-    @required this.child,
-    this.count,
+    Key? key,
+    required this.child,
+    required this.count,
     this.onPressed,
   }) : super(key: key);
 

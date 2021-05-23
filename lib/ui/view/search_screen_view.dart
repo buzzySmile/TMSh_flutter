@@ -4,7 +4,7 @@ import 'package:tmsh_flutter/search_bloc/bloc.dart';
 import 'package:tmsh_flutter/ui/search_screen.dart';
 
 class SearchScreenView extends StatelessWidget {
-  const SearchScreenView({Key key}) : super(key: key);
+  const SearchScreenView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
 class TMDbMovieError implements Exception {
-  final String message;
+  final String? message;
   TMDbMovieError(this.message);
 }

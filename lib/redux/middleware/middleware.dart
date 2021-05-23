@@ -26,7 +26,7 @@ void appMiddlware(
   }
 
   if (action is CommitMovieAction) {
-    if (store.state.movies.contains(action.movie)) {
+    if (store.state.movies!.contains(action.movie)) {
       storage.removeMovie(action.movie);
     } else {
       storage.saveMovie(action.movie);

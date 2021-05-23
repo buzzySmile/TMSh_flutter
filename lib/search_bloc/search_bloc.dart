@@ -50,8 +50,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         await _tmdbClient.searchMovie(query: _queryText, pageIndex: _pageIndex);
 
     _movieList.addAll(searchResult.movies);
-    _pageIndex = searchResult.pageIndex;
-    _totalPages = searchResult.totalPages;
+    _pageIndex = searchResult.pageIndex!;
+    _totalPages = searchResult.totalPages!;
     yield SearchState.ready(_movieList);
   }
 

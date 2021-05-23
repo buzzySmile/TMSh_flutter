@@ -8,17 +8,14 @@ import 'package:sembast/sembast_io.dart';
 class AppDatabase {
   static final AppDatabase _singleton = AppDatabase._();
 
-  static Database _database;
+  static Database? _database;
 
   AppDatabase._();
 
   static AppDatabase get instance => _singleton;
 
-  Future<Database> get database async {
-    if (_database == null) _database = await _openDatabase();
-
-    return _database;
-  }
+  Future<Database> get database async =>
+      _database ??= await (_openDatabase() as FutureOr<Database>);
 
   Future _openDatabase() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();

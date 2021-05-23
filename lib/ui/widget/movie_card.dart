@@ -7,9 +7,11 @@ import 'package:tmsh_flutter/redux/app_state.dart';
 
 class MovieCard extends StatelessWidget {
   final TMDbMovieCard movieData;
-  final ValueChanged<TMDbMovieCard> onShortlist;
 
-  MovieCard({Key key, this.movieData, this.onShortlist}) : super(key: key);
+  MovieCard({
+    Key? key,
+    required this.movieData,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +91,8 @@ class _ViewModel {
   final Function(TMDbMovieCard) onCommitMovie;
 
   _ViewModel({
-    this.isFavorite,
-    this.onCommitMovie,
+    required this.isFavorite,
+    required this.onCommitMovie,
   });
 
   factory _ViewModel.fromStore(
@@ -98,7 +100,7 @@ class _ViewModel {
     TMDbMovieCard movie,
   ) {
     return _ViewModel(
-      isFavorite: store.state.movies.contains(movie),
+      isFavorite: store.state.movies!.contains(movie),
       onCommitMovie: (movie) => store.dispatch(CommitMovieAction(movie)),
     );
   }

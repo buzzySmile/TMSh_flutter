@@ -13,12 +13,12 @@ const int MAX_SEARCH_RESULTS = 5;
 
 class TMDbApiSource {
   static const String baseUrl = 'api.themoviedb.org';
-  final http.Client client;
+  final http.Client /*!*/ client;
 
   TMDbApiSource(this.client);
 
   Future<TMDbSearchMovies> searchMovie(
-      {@required String query, int pageIndex: 1}) async {
+      {@required required String query, int pageIndex: 1}) async {
     var uri = Uri.https(
       baseUrl,
       '3/search/movie',
@@ -32,7 +32,7 @@ class TMDbApiSource {
       },
     );
 
-    final response = await client.get(uri.toString());
+    final response = await client.get(uri);
 
     // delay to simulate slow network
     // await Future.delayed(const Duration(seconds: 1));
@@ -44,7 +44,7 @@ class TMDbApiSource {
     }
   }
 
-  Future<TMDbMovieCard> fetchMovieInfo({@required int movieId}) async {
+  Future<TMDbMovieCard> fetchMovieInfo({required int movieId}) async {
     var uri = Uri.https(
       baseUrl,
       '3/movie/${movieId.toString()}',
@@ -54,13 +54,13 @@ class TMDbApiSource {
       },
     );
 
-    final response = await client.get(uri.toString());
+    final response = await client.get(uri);
 
     // delay to simulate slow network
     // await Future.delayed(const Duration(seconds: 1));
 
     if (response.statusCode == 200) {
-      return TMDbMovieCard.fromJSON(json.decode(response.body));
+      return TMDbMovieCard.fromJson(json.decode(response.body));
     } else {
       throw TMDbMovieError(json.decode(response.body)['status_message']);
     }

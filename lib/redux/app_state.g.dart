@@ -15,9 +15,9 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
   final String wireName = 'AppState';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, AppState object,
+  Iterable<Object?> serialize(Serializers serializers, AppState object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'loading',
       serializers.serialize(object.loading,
           specifiedType: const FullType(bool)),
@@ -31,19 +31,19 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
   }
 
   @override
-  AppState deserialize(Serializers serializers, Iterable<Object> serialized,
+  AppState deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new AppStateBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current as String?;
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
         case 'loading':
           result.loading = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+              specifiedType: const FullType(bool)) as bool?;
           break;
         case 'movies':
           result.movies.replace(serializers.deserialize(value,
@@ -60,11 +60,11 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
 
 class _$AppState extends AppState {
   @override
-  final bool loading;
+  final bool? loading;
   @override
-  final BuiltList<TMDbMovieCard> movies;
+  final BuiltList<TMDbMovieCard>? movies;
 
-  factory _$AppState([void Function(AppStateBuilder) updates]) =>
+  factory _$AppState([void Function(AppStateBuilder)? updates]) =>
       (new AppStateBuilder()..update(updates)).build();
 
   _$AppState._({this.loading, this.movies}) : super._() {
@@ -98,13 +98,13 @@ class _$AppState extends AppState {
 }
 
 class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
-  _$AppState _$v;
+  _$AppState? _$v;
 
-  bool _loading;
-  bool get loading => _$this._loading;
-  set loading(bool loading) => _$this._loading = loading;
+  bool? _loading;
+  bool? get loading => _$this._loading;
+  set loading(bool? loading) => _$this._loading = loading;
 
-  ListBuilder<TMDbMovieCard> _movies;
+  ListBuilder<TMDbMovieCard>? _movies;
   ListBuilder<TMDbMovieCard> get movies =>
       _$this._movies ??= new ListBuilder<TMDbMovieCard>();
   set movies(ListBuilder<TMDbMovieCard> movies) => _$this._movies = movies;
@@ -113,8 +113,8 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
 
   AppStateBuilder get _$this {
     if (_$v != null) {
-      _loading = _$v.loading;
-      _movies = _$v.movies?.toBuilder();
+      _loading = _$v!.loading;
+      _movies = _$v!.movies?.toBuilder();
       _$v = null;
     }
     return this;
@@ -129,7 +129,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   }
 
   @override
-  void update(void Function(AppStateBuilder) updates) {
+  void update(void Function(AppStateBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
@@ -140,7 +140,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _$result =
           _$v ?? new _$AppState._(loading: loading, movies: movies.build());
     } catch (_) {
-      String _$failedField;
+      late String _$failedField;
       try {
         _$failedField = 'movies';
         movies.build();

@@ -7,7 +7,7 @@ import 'package:tmsh_flutter/ui/widget/search_field.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -84,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildList(BuildContext context, SearchStateReady moviesReady) {
     return NotificationListener(
-      onNotification: (onNotify) =>
+      onNotification: (dynamic onNotify) =>
           _handleScrollNotification(context, onNotify),
       child: ListView.builder(
           controller: _scrollController,

@@ -33,12 +33,12 @@ class StorageServiceImpl implements StorageService {
     final key = await _store.findKey(await _database, finder: finder);
     print('Key for ${movie.title} = $key');
     if (key == null) {
-      final savedKey = await _store.add(await _database, movie.toMap());
+      final savedKey = await _store.add(await _database, movie.toJson());
       print('Movie ${movie.title} saved with key $savedKey');
     } else {
       final count = await _store.update(
         await _database,
-        movie.toMap(),
+        movie.toJson(),
         finder: finder,
       );
       print('Movie ${movie.title} with key $key updated $count times ');
@@ -57,14 +57,14 @@ class StorageServiceImpl implements StorageService {
   Future _loadShortlist() async {
     _loaded = true;
 
-    var query = _store.query();
+    var query = _store.query() as QueryRef<int, Map<String, Object>>;
     query.onSnapshots(await _database).listen((snapshots) {
       print("Stream from DB: ${snapshots.length} records");
       _shortlistSubject.add(
         List.unmodifiable(
           []..addAll(snapshots
               .map(
-                (snapshot) => TMDbMovieCard.fromJSON(snapshot.value),
+                (snapshot) => TMDbMovieCard.fromJson(snapshot.value),
               )
               .toList()),
         ),

@@ -22,11 +22,13 @@
 **/doc/api/
 .dart_tool/
 .flutter-plugins
+.flutter-plugins-dependencies
+**/generated_plugin_registrant.dart
 .packages
 .pub-cache/
 .pub/
-/build/
-.flutter-plugins-dependencies
+.fvm/
+build/
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -54,15 +56,24 @@
 **/ios/**/profile
 **/ios/**/xcuserdata
 **/ios/.generated/
+**/ios/Flutter/.last_build_id
 **/ios/Flutter/App.framework
 **/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
 **/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/flutter_export_environment.sh
 **/ios/Flutter/app.flx
 **/ios/Flutter/app.zip
 **/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+# iOS builds
+**/ios/build/
+**/ios/*.ipa
+**/ios/*.app.dSYM.zip
+
+# macOS
+**/macos/Flutter/GeneratedPluginRegistrant.swift
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3

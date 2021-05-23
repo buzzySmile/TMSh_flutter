@@ -6,7 +6,7 @@ import 'package:tmsh_flutter/ui/view/search_screen_view.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final Object args = settings.arguments;
+    final Object args = settings.arguments!;
 
     switch (settings.name) {
       case '/':

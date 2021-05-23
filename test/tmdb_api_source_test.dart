@@ -17,8 +17,8 @@ void main() {
   String mockOf(String name) =>
       File('test/mocks/$name.json').readAsStringSync();
 
-  MockClient mockClient;
-  TMDbApiSource dataSource;
+  late MockClient mockClient;
+  late TMDbApiSource dataSource;
 
   setUp(() {
     mockClient = MockClient();
@@ -33,7 +33,7 @@ void main() {
           mockClient.get(
             argThat(
               startsWith('https://api.themoviedb.org/3/search/movie'),
-            ),
+            )!,
           ),
         ).thenAnswer(
           (_) async => http.Response(
@@ -58,7 +58,7 @@ void main() {
         mockClient.get(
           argThat(
             startsWith('https://api.themoviedb.org/3/search/movie'),
-          ),
+          )!,
         ),
       ).thenAnswer(
         (_) async => http.Response(mockOf('search_response_error'), 400),
@@ -77,7 +77,7 @@ void main() {
         mockClient.get(
           argThat(
             startsWith('https://api.themoviedb.org/3/search/movie'),
-          ),
+          )!,
         ),
       ).thenAnswer(
         (_) async => http.Response(
@@ -101,7 +101,7 @@ void main() {
             contains('include_adult=false'),
             //isNot(contains('page')),
           ),
-        )),
+        )!),
         mockClient.get(argThat(
           allOf(
             startsWith('https://api.themoviedb.org/3/search/movie'),
@@ -111,7 +111,7 @@ void main() {
             contains('language=en-US'),
             contains('include_adult=false'),
           ),
-        )),
+        )!),
         mockClient.get(argThat(
           allOf(
             startsWith('https://api.themoviedb.org/3/search/movie'),
@@ -120,7 +120,7 @@ void main() {
             contains('language=en-US'),
             contains('include_adult=false'),
           ),
-        )),
+        )!),
       ]);
     });
   });
@@ -131,7 +131,9 @@ void main() {
       () async {
         when(
           mockClient.get(
-            startsWith('https://api.themoviedb.org/3/movie/'),
+            argThat(
+              startsWith('https://api.themoviedb.org/3/movie/'),
+            )!,
           ),
         ).thenAnswer(
           (_) async => http.Response(
@@ -154,7 +156,7 @@ void main() {
               contains('27205'),
               contains('api_key=$API_KEY'),
             ),
-          ),
+          )!,
         ));
       },
     );
@@ -164,7 +166,7 @@ void main() {
         mockClient.get(
           argThat(
             startsWith('https://api.themoviedb.org/3/movie/'),
-          ),
+          )!,
         ),
       ).thenAnswer(
         (_) async => http.Response(mockOf('movie_response_error'), 400),
@@ -179,7 +181,9 @@ void main() {
     test('makes HTTP requests to proper URLs', () {
       when(
         mockClient.get(
-          startsWith('https://api.themoviedb.org/3/movie/'),
+          argThat(
+            startsWith('https://api.themoviedb.org/3/movie/'),
+          )!,
         ),
       ).thenAnswer(
         (_) async => http.Response(
@@ -200,7 +204,7 @@ void main() {
               contains('11'),
               contains('key=$API_KEY'),
             ),
-          ),
+          )!,
         ),
         mockClient.get(
           argThat(
@@ -209,7 +213,7 @@ void main() {
               contains('0'),
               contains('key=$API_KEY'),
             ),
-          ),
+          )!,
         ),
       ]);
     });

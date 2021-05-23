@@ -1,43 +1,82 @@
-class TMDbMovieCard extends Object {
+class TMDbMovieCard {
   static const String imageBaseUrl = 'http://image.tmdb.org/t/p/w185/';
 
   final int id;
-  final voteAverage;
   final String title;
-  final String posterPath;
-  final String overview;
+  final double voteAverage;
+  final String? posterPath;
+  final String? overview;
 
-  String get poster => posterPath == null ? '' : imageBaseUrl + this.posterPath;
+  TMDbMovieCard({
+    required this.id,
+    required this.title,
+    required this.voteAverage,
+    this.posterPath,
+    this.overview,
+  });
 
-  TMDbMovieCard(
-      this.id, this.title, this.overview, this.voteAverage, this.posterPath);
+  String get poster =>
+      posterPath == null ? '' : imageBaseUrl + this.posterPath!;
 
-  TMDbMovieCard.fromJSON(Map<String, dynamic> json)
-      : id = json['id'],
-        title = json['title'],
-        overview = json['overview'],
-        voteAverage = json['vote_average'],
-        posterPath = json['poster_path'] == null ? '' : json['poster_path'];
+  TMDbMovieCard copyWith({
+    int? id,
+    String? title,
+    double? voteAverage,
+    String? posterPath,
+    String? overview,
+  }) {
+    return TMDbMovieCard(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      voteAverage: voteAverage ?? this.voteAverage,
+      posterPath: posterPath ?? this.posterPath,
+      overview: overview ?? this.overview,
+    );
+  }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
-      'id': this.id,
-      'title': this.title,
-      'overview': this.overview,
-      'vote_average': this.voteAverage,
-      'poster_path': this.posterPath,
+      'id': id,
+      'title': title,
+      'voteAverage': voteAverage,
+      'posterPath': posterPath,
+      'overview': overview,
     };
   }
 
-  @override
-  bool operator ==(dynamic other) =>
-      identical(this, other) || this.id == other.id;
-
-  @override
-  int get hashCode => id;
+  factory TMDbMovieCard.fromJson(Map<String, dynamic> map) {
+    return TMDbMovieCard(
+      id: map['id'],
+      title: map['title'],
+      voteAverage: map['voteAverage'],
+      posterPath: map['posterPath'],
+      overview: map['overview'],
+    );
+  }
 
   @override
   String toString() {
-    return "$id-$title";
+    return 'TMDbMovieCard(id: $id, title: $title, voteAverage: $voteAverage, posterPath: $posterPath, overview: $overview)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TMDbMovieCard &&
+        other.id == id &&
+        other.title == title &&
+        other.voteAverage == voteAverage &&
+        other.posterPath == posterPath &&
+        other.overview == overview;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        title.hashCode ^
+        voteAverage.hashCode ^
+        posterPath.hashCode ^
+        overview.hashCode;
   }
 }
