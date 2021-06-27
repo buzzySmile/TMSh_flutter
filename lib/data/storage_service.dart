@@ -49,7 +49,7 @@ class StorageServiceImpl implements StorageService {
   Stream<List<TMDbMovieCard>> shortlist() {
     if (!_loaded) _loadShortlist();
 
-    print("!!!Shortlist stream called!!!");
+    print('!!!Shortlist stream called!!!');
 
     return _shortlistSubject.stream;
   }
@@ -59,15 +59,13 @@ class StorageServiceImpl implements StorageService {
 
     var query = _store.query() as QueryRef<int, Map<String, Object>>;
     query.onSnapshots(await _database).listen((snapshots) {
-      print("Stream from DB: ${snapshots.length} records");
+      print('Stream from DB: ${snapshots.length} records');
       _shortlistSubject.add(
-        List.unmodifiable(
-          []..addAll(snapshots
-              .map(
-                (snapshot) => TMDbMovieCard.fromJson(snapshot.value),
-              )
-              .toList()),
-        ),
+        List.unmodifiable(snapshots
+            .map(
+              (snapshot) => TMDbMovieCard.fromJson(snapshot.value),
+            )
+            .toList()),
       );
     });
   }

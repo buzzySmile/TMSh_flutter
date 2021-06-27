@@ -17,8 +17,10 @@ class TMDbApiSource {
 
   TMDbApiSource(this.client);
 
-  Future<TMDbSearchMovies> searchMovie(
-      {@required required String query, int pageIndex: 1}) async {
+  Future<TMDbSearchMovies> searchMovie({
+    @required required String query,
+    int pageIndex = 1,
+  }) async {
     var uri = Uri.https(
       baseUrl,
       '3/search/movie',

@@ -23,8 +23,10 @@ class _MovieScreenState extends State<MovieScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
-                child:
-                    Image.network(widget._movieCard.poster, fit: BoxFit.cover)),
+              child: widget._movieCard.hasPoster
+                  ? Image.network(widget._movieCard.poster, fit: BoxFit.cover)
+                  : Image(image: AssetImage('images/poster_placeholder.png')),
+            ),
           ),
           Text(
             '${widget._movieCard.overview}',

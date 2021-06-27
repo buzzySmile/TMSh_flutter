@@ -19,6 +19,7 @@ class _SearchFieldState extends State<SearchField> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
 
+  @override
   void initState() {
     super.initState();
     _focusNode.addListener(() {

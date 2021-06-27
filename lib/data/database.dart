@@ -21,7 +21,7 @@ class AppDatabase {
     final dbPath = join(appDocumentDir.path, 'shortlist.db');
     final database = await databaseFactoryIo.openDatabase(dbPath);
 
-    print("DB: $dbPath opened");
+    print('DB: $dbPath opened');
 
     return database;
   }

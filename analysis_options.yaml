@@ -1,0 +1,49 @@
+include: package:pedantic/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - packages/**
+    - test/**
+  errors:
+    # treat missing required parameters as a warning (not a hint)
+    missing_required_param: warning
+    # treat missing returns as a warning (not a hint)
+    missing_return: warning
+    # allow having TODOs in the code
+    todo: ignore
+
+linter:
+  rules:
+    # OFF
+    # Annotate variable types is a developer choice
+    omit_local_variable_types: false
+
+    # helps to highlight some decisions in code
+    unnecessary_this: false
+
+    # helps to highlight some decisions in code
+    # old school, of cource
+    avoid_init_to_null: false
+
+    # ON
+    # for readability and to express ideas shortly
+    # about "only 80 chars" there is an issue - https://github.com/dart-lang/dart_style/issues/833
+    lines_longer_than_80_chars: true
+
+    # Reduce chaos from import lists (+ yout IDE could support 'Sort imports')
+    directives_ordering: true
+    
+    # avoid trash
+    avoid_empty_else: true
+    
+    # no comments
+    avoid_relative_lib_imports: true
+
+    # https://dart-lang.github.io/linter/lints/empty_catches.html
+    # always comment such cases
+    empty_catches: true
+
+    # prevent leaks
+    # https://dart-lang.github.io/linter/lints/cancel_subscriptions.html
+    cancel_subscriptions: true

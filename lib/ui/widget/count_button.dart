@@ -16,12 +16,17 @@ class CountButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ButtonTheme(
       minWidth: 0.0,
-      child: FlatButton(
+      child: TextButton(
         onPressed: this.onPressed,
         // elevation: 0,
-        color: Theme.of(context).accentColor,
+        style: TextButton.styleFrom(
+          textStyle: TextStyle(
+            fontSize: 20,
+            color: Theme.of(context).accentColor,
+          ),
+        ),
         child: Stack(
-          overflow: Overflow.visible,
+          clipBehavior: Clip.none,
           children: [
             this.child,
             Positioned(

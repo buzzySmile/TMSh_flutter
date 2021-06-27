@@ -14,10 +14,11 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
 
   AppState._();
 
-  factory AppState([updates(AppStateBuilder b)?]) => _$AppState((b) => b
-    ..loading = false
-    ..movies = ListBuilder<TMDbMovieCard>([])
-    ..update(updates));
+  factory AppState([Function(AppStateBuilder b)? updates]) =>
+      _$AppState((b) => b
+        ..loading = false
+        ..movies = ListBuilder<TMDbMovieCard>([])
+        ..update(updates));
 
   factory AppState.fromMovies(List<TMDbMovieCard> movieList) =>
       AppState((b) => b..movies = ListBuilder<TMDbMovieCard>(movieList));

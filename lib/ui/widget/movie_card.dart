@@ -20,7 +20,9 @@ class MovieCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Image.network(movieData.poster, fit: BoxFit.cover),
+          movieData.hasPoster
+              ? Image.network(movieData.poster, fit: BoxFit.cover)
+              : Image(image: AssetImage('images/poster_placeholder.png')),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(15.0, 5.0, 10.0, 10.0),
@@ -64,13 +66,13 @@ class MovieCard extends StatelessWidget {
                             _ViewModel.fromStore(store, movieData),
                         builder: (context, vm) {
                           return InkWell(
+                            onTap: () => vm.onCommitMovie(movieData),
                             child: Icon(
                               Icons.star,
                               color: vm.isFavorite
                                   ? Colors.yellow
                                   : Colors.black38,
                             ),
-                            onTap: () => vm.onCommitMovie(movieData),
                           );
                         },
                       ),

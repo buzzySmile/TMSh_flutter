@@ -16,15 +16,18 @@ class FavoriteButton extends StatelessWidget {
       builder: (context, store) {
         return ButtonTheme(
           minWidth: 0.0,
-          child: FlatButton(
+          child: TextButton(
             onPressed: () => Navigator.pushNamed(
               context,
               '/shortlist',
             ),
-            // elevation: 0,
-            color: Theme.of(context).accentColor,
+            style: TextButton.styleFrom(
+              textStyle: TextStyle(
+                color: Theme.of(context).accentColor,
+              ),
+            ),
             child: Stack(
-              overflow: Overflow.visible,
+              clipBehavior: Clip.none,
               children: [
                 this.icon,
                 Positioned(

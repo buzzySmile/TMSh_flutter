@@ -45,7 +45,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           actions: <Widget>[
             FavoriteButton(
-              icon: const Icon(Icons.star),
+              icon: const Icon(Icons.star, color: Colors.grey),
             ),
           ]),
       body: BlocBuilder<SearchBloc, SearchState>(
@@ -92,13 +92,13 @@ class _SearchScreenState extends State<SearchScreen> {
           itemBuilder: (BuildContext context, int index) {
             return Card(
               child: GestureDetector(
-                child: MovieCard(
-                  movieData: moviesReady.movies[index],
-                ),
                 onTap: () => Navigator.pushNamed(
                   context,
                   '/movie',
                   arguments: moviesReady.movies[index],
+                ),
+                child: MovieCard(
+                  movieData: moviesReady.movies[index],
                 ),
               ),
             );
@@ -111,8 +111,9 @@ class _SearchScreenState extends State<SearchScreen> {
     Notification notification,
   ) {
     if (notification is ScrollEndNotification &&
-        _scrollController.position.extentAfter == 0)
+        _scrollController.position.extentAfter == 0) {
       BlocProvider.of<SearchBloc>(context).add(SearchEvent.next());
+    }
 
     return false;
   }

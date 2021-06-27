@@ -3,6 +3,7 @@ import 'package:sembast/sembast.dart';
 
 import 'package:tmsh_flutter/data/database.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
+import 'package:pedantic/pedantic.dart';
 
 abstract class ShortlistRepository {
   List<TMDbMovieCard> get value;
@@ -41,22 +42,22 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
     );
 
     if (key == null) {
-      _store
+      unawaited(_store
           .add(
             await _database,
             movie.toJson(),
           )
           .then((savedKey) =>
-              print('Movie ${movie.title} saved with key $savedKey'));
+              print('Movie ${movie.title} saved with key $savedKey')));
     } else {
-      _store
+      unawaited(_store
           .update(
             await _database,
             movie.toJson(),
             finder: finder,
           )
           .then((count) => print(
-              'Movie ${movie.title} with key $key updated $count times '));
+              'Movie ${movie.title} with key $key updated $count times ')));
     }
   }
 
@@ -64,7 +65,7 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
   Stream<List<TMDbMovieCard>> shortlist() {
     if (!_loaded) _loadShortlist();
 
-    print("!!!Shortlist stream called!!!");
+    print('!!!Shortlist stream called!!!');
 
     return _shortlistSubject.stream;
   }
@@ -74,14 +75,14 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
 
     final query = _store.query();
     query.onSnapshots(await _database).listen((snapshots) {
-      print("Stream from DB: ${snapshots.length} records");
+      print('Stream from DB: ${snapshots.length} records');
       _shortlistSubject.add(
         List.unmodifiable(
-          []..addAll(snapshots
+          snapshots
               .map(
                 (snapshot) => TMDbMovieCard.fromJson(snapshot.value),
               )
-              .toList()),
+              .toList(),
         ),
       );
     });

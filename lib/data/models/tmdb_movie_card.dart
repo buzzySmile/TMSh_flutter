@@ -1,9 +1,9 @@
 class TMDbMovieCard {
   static const String imageBaseUrl = 'http://image.tmdb.org/t/p/w185/';
 
-  final int id;
-  final String title;
-  final double voteAverage;
+  final int? id;
+  final String? title;
+  final double? voteAverage;
   final String? posterPath;
   final String? overview;
 
@@ -14,6 +14,8 @@ class TMDbMovieCard {
     this.posterPath,
     this.overview,
   });
+
+  bool get hasPoster => posterPath != null;
 
   String get poster =>
       posterPath == null ? '' : imageBaseUrl + this.posterPath!;
@@ -38,8 +40,8 @@ class TMDbMovieCard {
     return {
       'id': id,
       'title': title,
-      'voteAverage': voteAverage,
-      'posterPath': posterPath,
+      'vote_average': voteAverage,
+      'poster_path': posterPath,
       'overview': overview,
     };
   }
@@ -48,15 +50,20 @@ class TMDbMovieCard {
     return TMDbMovieCard(
       id: map['id'],
       title: map['title'],
-      voteAverage: map['voteAverage'],
-      posterPath: map['posterPath'],
+      voteAverage: (map['vote_average'] as num).toDouble(),
+      posterPath: map['poster_path'],
       overview: map['overview'],
     );
   }
 
   @override
   String toString() {
-    return 'TMDbMovieCard(id: $id, title: $title, voteAverage: $voteAverage, posterPath: $posterPath, overview: $overview)';
+    return 'TMDbMovieCard('
+        'id: $id, '
+        'title: $title, '
+        'vote_average: $voteAverage, '
+        'poster_path: $posterPath, '
+        'overview: $overview)';
   }
 
   @override
