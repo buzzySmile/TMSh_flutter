@@ -16,6 +16,9 @@
 .idea/
 
 # Visual Studio Code related
+.classpath
+.project
+.settings/
 .vscode/
 
 # Flutter/Dart/Pub related
@@ -27,7 +30,7 @@
 .packages
 .pub-cache/
 .pub/
-.fvm/
+.fvm/flutter_sdk
 build/
 
 # Android related
@@ -83,4 +86,4 @@ build/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 # Project private related
-lib/data/api_key.dart
+# lib/data/api_key.dart

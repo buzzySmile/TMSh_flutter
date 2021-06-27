@@ -33,10 +33,10 @@ linter:
 
     # Reduce chaos from import lists (+ yout IDE could support 'Sort imports')
     directives_ordering: true
-    
+
     # avoid trash
     avoid_empty_else: true
-    
+
     # no comments
     avoid_relative_lib_imports: true
 
