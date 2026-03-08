@@ -17,8 +17,7 @@ class TMDbMovieCard {
 
   bool get hasPoster => posterPath != null;
 
-  String get poster =>
-      posterPath == null ? '' : imageBaseUrl + this.posterPath!;
+  String get poster => posterPath == null ? '' : imageBaseUrl + posterPath!;
 
   TMDbMovieCard copyWith({
     int? id,

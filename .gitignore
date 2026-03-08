@@ -32,6 +32,13 @@
 .pub/
 .fvm/flutter_sdk
 build/
+**/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -85,5 +92,13 @@ build/
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
+# FVM Version Cache
+.fvm/
+
+# Generated
+**/*.freezed.dart
+**/*.g.dart
+**/generated/
+
 # Project private related
-# lib/data/api_key.dart
+lib/data/api_key.dart

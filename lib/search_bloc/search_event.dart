@@ -11,7 +11,7 @@ abstract class SearchEvent extends Equatable {
 
 class SearchEventQuery extends SearchEvent {
   final String query;
-  SearchEventQuery(this.query);
+  const SearchEventQuery(this.query);
 
   @override
   List<Object> get props => [query];

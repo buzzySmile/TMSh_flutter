@@ -15,8 +15,9 @@ class StorageServiceImpl implements StorageService {
   static const String shortlistName = 'shortlist';
 
   StorageServiceImpl([List<TMDbMovieCard> seedValue = const []])
-      : this._shortlistSubject =
-            BehaviorSubject<List<TMDbMovieCard>>.seeded(seedValue);
+    : _shortlistSubject = BehaviorSubject<List<TMDbMovieCard>>.seeded(
+        seedValue,
+      );
 
   final BehaviorSubject<List<TMDbMovieCard>> _shortlistSubject;
 
@@ -61,11 +62,11 @@ class StorageServiceImpl implements StorageService {
     query.onSnapshots(await _database).listen((snapshots) {
       print('Stream from DB: ${snapshots.length} records');
       _shortlistSubject.add(
-        List.unmodifiable(snapshots
-            .map(
-              (snapshot) => TMDbMovieCard.fromJson(snapshot.value),
-            )
-            .toList()),
+        List.unmodifiable(
+          snapshots
+              .map((snapshot) => TMDbMovieCard.fromJson(snapshot.value))
+              .toList(),
+        ),
       );
     });
   }
@@ -74,9 +75,6 @@ class StorageServiceImpl implements StorageService {
   Future removeMovie(TMDbMovieCard movie) async {
     final finder = Finder(filter: Filter.equals('id', movie.id));
 
-    await _store.delete(
-      await _database,
-      finder: finder,
-    );
+    await _store.delete(await _database, finder: finder);
   }
 }

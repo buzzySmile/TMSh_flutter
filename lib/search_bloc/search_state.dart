@@ -22,7 +22,7 @@ class SearchStateLoading extends SearchState {
 
 class SearchStateReady extends SearchState {
   final List<TMDbMovieCard> movies;
-  SearchStateReady(this.movies);
+  const SearchStateReady(this.movies);
 
   @override
   List<Object> get props => [movies];

@@ -5,12 +5,9 @@ import 'package:tmsh_flutter/redux/app_state.dart';
 
 // with usage combineReducers from package:redux lib
 final Reducer<AppState> appReducer = combineReducers<AppState>([
-  TypedReducer<AppState, ShortlistLoadedAction>(_initShortlist),
+  TypedReducer<AppState, ShortlistLoadedAction>(_initShortlist).call,
 ]);
 
-AppState _initShortlist(
-  AppState state,
-  ShortlistLoadedAction action,
-) {
+AppState _initShortlist(AppState state, ShortlistLoadedAction action) {
   return state.rebuild((b) => b..movies = action.movies.build().toBuilder());
 }

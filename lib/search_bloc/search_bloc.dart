@@ -1,8 +1,9 @@
-import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
 import 'package:kiwi/kiwi.dart';
+
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
 import 'package:tmsh_flutter/data/tmdb_api_source.dart';
+
 import './bloc.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
@@ -16,10 +17,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc() : super(SearchStateInit());
 
   @override
-  Stream<Transition<SearchEvent, SearchState>> transformEvents(
-    Stream<SearchEvent> events,
-    TransitionFunction<SearchEvent, SearchState> next,
-  ) {
+  Stream<Transition<SearchEvent, SearchState>> transformEvents(events, next) {
     return events
         .debounceTime(const Duration(milliseconds: 750))
         .switchMap(next);
@@ -46,8 +44,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
 
     // start search query and handle search result
-    final searchResult =
-        await _tmdbClient.searchMovie(query: _queryText, pageIndex: _pageIndex);
+    final searchResult = await _tmdbClient.searchMovie(
+      query: _queryText,
+      pageIndex: _pageIndex,
+    );
 
     _movieList.addAll(searchResult.movies);
     _pageIndex = searchResult.pageIndex!;

@@ -5,11 +5,7 @@ class SearchField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
 
-  const SearchField({
-    Key? key,
-    this.onChanged,
-    this.onSubmitted,
-  }) : super(key: key);
+  const SearchField({super.key, this.onChanged, this.onSubmitted});
 
   @override
   _SearchFieldState createState() => _SearchFieldState();
@@ -24,8 +20,10 @@ class _SearchFieldState extends State<SearchField> {
     super.initState();
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
-        _controller.selection =
-            TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+        _controller.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: _controller.text.length,
+        );
       }
     });
   }
@@ -36,10 +34,7 @@ class _SearchFieldState extends State<SearchField> {
       decoration: InputDecoration(
         hintText: 'Search movies',
         border: InputBorder.none,
-        icon: Icon(
-          Icons.search,
-          color: Colors.black.withOpacity(0.5),
-        ),
+        icon: Icon(Icons.search, color: Colors.black.withOpacity(0.5)),
       ),
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,

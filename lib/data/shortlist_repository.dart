@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:rxdart/rxdart.dart';
 import 'package:sembast/sembast.dart';
 
 import 'package:tmsh_flutter/data/database.dart';
 import 'package:tmsh_flutter/data/models/tmdb_movie_card.dart';
-import 'package:pedantic/pedantic.dart';
 
 abstract class ShortlistRepository {
   List<TMDbMovieCard> get value;
@@ -18,8 +19,9 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
   static const String shortlistName = 'shortlist';
 
   ShortlistRepositoryImpl([List<TMDbMovieCard> seedValue = const []])
-      : this._shortlistSubject =
-            BehaviorSubject<List<TMDbMovieCard>>.seeded(seedValue);
+    : _shortlistSubject = BehaviorSubject<List<TMDbMovieCard>>.seeded(
+        seedValue,
+      );
 
   final BehaviorSubject<List<TMDbMovieCard>> _shortlistSubject;
 
@@ -36,28 +38,27 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
   Future saveMovie(TMDbMovieCard movie) async {
     final finder = Finder(filter: Filter.equals('id', movie.id));
 
-    final key = await _store.findKey(
-      await _database,
-      finder: finder,
-    );
+    final key = await _store.findKey(await _database, finder: finder);
 
     if (key == null) {
-      unawaited(_store
-          .add(
-            await _database,
-            movie.toJson(),
-          )
-          .then((savedKey) =>
-              print('Movie ${movie.title} saved with key $savedKey')));
+      unawaited(
+        _store
+            .add(await _database, movie.toJson())
+            .then(
+              (savedKey) =>
+                  print('Movie ${movie.title} saved with key $savedKey'),
+            ),
+      );
     } else {
-      unawaited(_store
-          .update(
-            await _database,
-            movie.toJson(),
-            finder: finder,
-          )
-          .then((count) => print(
-              'Movie ${movie.title} with key $key updated $count times ')));
+      unawaited(
+        _store
+            .update(await _database, movie.toJson(), finder: finder)
+            .then(
+              (count) => print(
+                'Movie ${movie.title} with key $key updated $count times ',
+              ),
+            ),
+      );
     }
   }
 
@@ -79,9 +80,7 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
       _shortlistSubject.add(
         List.unmodifiable(
           snapshots
-              .map(
-                (snapshot) => TMDbMovieCard.fromJson(snapshot.value),
-              )
+              .map((snapshot) => TMDbMovieCard.fromJson(snapshot.value))
               .toList(),
         ),
       );
@@ -92,9 +91,6 @@ class ShortlistRepositoryImpl implements ShortlistRepository {
   Future removeMovie(TMDbMovieCard movie) async {
     final finder = Finder(filter: Filter.equals('id', movie.id));
 
-    await _store.delete(
-      await _database,
-      finder: finder,
-    );
+    await _store.delete(await _database, finder: finder);
   }
 }

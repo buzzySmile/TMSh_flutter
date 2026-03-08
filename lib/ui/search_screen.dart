@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tmsh_flutter/i18n/app_localizations.dart';
+
 import 'package:tmsh_flutter/search_bloc/bloc.dart';
 import 'package:tmsh_flutter/ui/widget/favorite_button.dart';
 import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 import 'package:tmsh_flutter/ui/widget/search_field.dart';
 
 class SearchScreen extends StatefulWidget {
-  SearchScreen({
-    Key? key,
-  }) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -26,28 +26,28 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          // Search bar - TextField for search query
-          title: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 5),
-              child: SearchField(
-                onChanged: (text) {
-                  BlocProvider.of<SearchBloc>(context)
-                      .add(SearchEvent.query(text));
-                  // context.read<SearchBloc>().add(SearchEvent.query(text));
-                },
-              ),
+        // Search bar - TextField for search query
+        title: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 5),
+            child: SearchField(
+              onChanged: (text) {
+                BlocProvider.of<SearchBloc>(
+                  context,
+                ).add(SearchEvent.query(text));
+                // context.read<SearchBloc>().add(SearchEvent.query(text));
+              },
             ),
           ),
-          actions: <Widget>[
-            FavoriteButton(
-              icon: const Icon(Icons.star, color: Colors.grey),
-            ),
-          ]),
+        ),
+        actions: <Widget>[
+          FavoriteButton(icon: const Icon(Icons.star, color: Colors.grey)),
+        ],
+      ),
       body: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, SearchState state) {
           if (state is SearchStateInit) {
@@ -62,9 +62,7 @@ class _SearchScreenState extends State<SearchScreen> {
             return _buildList(context, state);
           }
 
-          return Center(
-            child: Text('Something went wrong!'),
-          );
+          return Center(child: Text('Something went wrong!'));
         },
       ),
     );
@@ -72,14 +70,13 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildInit() {
     return Center(
-      child: const Text('Make a TMDb movie search'),
+      child: Text(AppLocalizations.of(context)!.helloWorld),
+      // child: const Text('Make a TMDb movie search'),
     );
   }
 
   Widget _buildLoading() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
+    return const Center(child: CircularProgressIndicator());
   }
 
   Widget _buildList(BuildContext context, SearchStateReady moviesReady) {
@@ -87,22 +84,21 @@ class _SearchScreenState extends State<SearchScreen> {
       onNotification: (dynamic onNotify) =>
           _handleScrollNotification(context, onNotify),
       child: ListView.builder(
-          controller: _scrollController,
-          itemCount: moviesReady.movies.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-              child: GestureDetector(
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  '/movie',
-                  arguments: moviesReady.movies[index],
-                ),
-                child: MovieCard(
-                  movieData: moviesReady.movies[index],
-                ),
+        controller: _scrollController,
+        itemCount: moviesReady.movies.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Card(
+            child: GestureDetector(
+              onTap: () => Navigator.pushNamed(
+                context,
+                '/movie',
+                arguments: moviesReady.movies[index],
               ),
-            );
-          }),
+              child: MovieCard(movieData: moviesReady.movies[index]),
+            ),
+          );
+        },
+      ),
     );
   }
 

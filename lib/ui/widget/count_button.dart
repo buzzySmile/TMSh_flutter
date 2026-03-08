@@ -5,30 +5,30 @@ class CountButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final int count;
 
-  CountButton({
-    Key? key,
+  const CountButton({
+    super.key,
     required this.child,
     required this.count,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return ButtonTheme(
       minWidth: 0.0,
       child: TextButton(
-        onPressed: this.onPressed,
+        onPressed: onPressed,
         // elevation: 0,
         style: TextButton.styleFrom(
           textStyle: TextStyle(
             fontSize: 20,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
           ),
         ),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            this.child,
+            child,
             Positioned(
               top: -12.0,
               right: -6.0,
@@ -39,7 +39,7 @@ class CountButton extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(4.5),
                   child: Text(
-                    this.count.toString(),
+                    count.toString(),
                     style: TextStyle(
                       fontSize: 13.0,
                       color: Colors.white,

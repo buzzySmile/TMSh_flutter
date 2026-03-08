@@ -4,9 +4,7 @@ import 'package:tmsh_flutter/redux/app_state.dart';
 import 'package:tmsh_flutter/ui/widget/movie_card.dart';
 
 class ShortlistScreen extends StatefulWidget {
-  ShortlistScreen({
-    Key? key,
-  }) : super(key: key);
+  const ShortlistScreen({super.key});
 
   @override
   _ShortlistScreenState createState() => _ShortlistScreenState();
@@ -16,27 +14,26 @@ class _ShortlistScreenState extends State<ShortlistScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('MY SHORTLIST'),
-      ),
+      appBar: AppBar(title: Text('MY SHORTLIST')),
       body: StoreBuilder<AppState>(
         builder: (context, store) {
           return ListView.builder(
-              itemCount: store.state.movies!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Card(
-                  child: GestureDetector(
-                    child: MovieCard(
-                      movieData: store.state.movies![index],
-                      // onShortlist: (movie) =>
-                      //     BlocProvider.of<ShortlistBloc>(context)
-                      //         .add(ShortlistAdd(movie)),
-                    ),
-                    // onTap: () => Navigator.pushNamed(context, '/movie',
-                    //     arguments: shortMovieList[index]),
+            itemCount: store.state.movies!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                child: GestureDetector(
+                  child: MovieCard(
+                    movieData: store.state.movies![index],
+                    // onShortlist: (movie) =>
+                    //     BlocProvider.of<ShortlistBloc>(context)
+                    //         .add(ShortlistAdd(movie)),
                   ),
-                );
-              });
+                  // onTap: () => Navigator.pushNamed(context, '/movie',
+                  //     arguments: shortMovieList[index]),
+                ),
+              );
+            },
+          );
         },
       ),
       // BlocBuilder<ShortlistBloc, ShortlistState>(

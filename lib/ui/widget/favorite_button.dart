@@ -5,10 +5,7 @@ import 'package:tmsh_flutter/redux/app_state.dart';
 class FavoriteButton extends StatelessWidget {
   final Widget icon;
 
-  FavoriteButton({
-    Key? key,
-    required this.icon,
-  }) : super(key: key);
+  const FavoriteButton({super.key, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -17,19 +14,14 @@ class FavoriteButton extends StatelessWidget {
         return ButtonTheme(
           minWidth: 0.0,
           child: TextButton(
-            onPressed: () => Navigator.pushNamed(
-              context,
-              '/shortlist',
-            ),
+            onPressed: () => Navigator.pushNamed(context, '/shortlist'),
             style: TextButton.styleFrom(
-              textStyle: TextStyle(
-                color: Theme.of(context).accentColor,
-              ),
+              textStyle: TextStyle(color: Theme.of(context).primaryColor),
             ),
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                this.icon,
+                icon,
                 Positioned(
                   top: -12.0,
                   right: -6.0,
